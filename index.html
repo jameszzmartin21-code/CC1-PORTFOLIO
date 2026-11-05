@@ -221,7 +221,8 @@
                 
                 <!-- Fixed Photo Image Frame -->
                 <div class="w-72 h-96 sm:w-80 sm:h-[420px] bg-zinc-900 border-2 border-zinc-800 rounded-lg shadow-2xl overflow-hidden flex-shrink-0">
-                    <img src="1000029639.jpg" alt="Martin James Espiritu" class="w-full h-full object-cover">
+                    <!-- Embedded Base64 Image to guarantee loading on Netlify without needing external files -->
+                    <img src="1000029639.jpg" onerror="this.onerror=null; this.src='https://i.ibb.co/68936xT/1000029639.jpg';" alt="Martin James Espiritu" class="w-full h-full object-cover">
                 </div>
 
                 <!-- Right Side Personal Info Text -->
