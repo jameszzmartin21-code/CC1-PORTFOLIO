@@ -215,35 +215,36 @@
     </header>
 
     <!-- Main Content Area Container -->
-    <main class="flex-1 max-w-6xl w-full mx-auto px-6 pt-20 pb-20 relative z-10">
+    <main class="flex-1 max-w-5xl w-full mx-auto px-6 pt-20 pb-20 relative z-10">
 
         <!-- 1. HOME SECTION -->
         <section id="page-0" class="page-section active">
-            <div class="flex flex-col md:flex-row items-center justify-center gap-8 lg:gap-12 w-full h-full my-auto">
+            <div class="flex flex-col md:flex-row items-center justify-center gap-10 sm:gap-14">
                 
-                <!-- Photo Container (Takes Half of the Screen on Medium+ Screens) -->
-                <div class="w-full md:w-1/2 h-[380px] sm:h-[450px] lg:h-[480px] bg-zinc-900 border-2 border-zinc-800 rounded-2xl shadow-2xl overflow-hidden flex-shrink-0">
+                <!-- Fixed Photo Image Frame -->
+                <div class="w-64 h-80 sm:w-72 sm:h-[380px] bg-zinc-900 border-2 border-zinc-800 rounded-lg shadow-2xl overflow-hidden flex-shrink-0">
                     <!-- Embedded Base64 / Local Image -->
                     <img src="1000029639.jpg" onerror="this.onerror=null; this.src='https://i.ibb.co/68936xT/1000029639.jpg';" alt="Martin James Espiritu" class="w-full h-full object-cover">
                 </div>
 
-                <!-- Right Half: Name, Degree & Welcome Details -->
-                <div class="w-full md:w-1/2 text-zinc-300 space-y-5 text-left flex flex-col justify-center">
+                <!-- Right Side Personal Info & Welcome Text -->
+                <div class="flex-1 max-w-2xl text-zinc-300 space-y-5 text-left">
                     <div>
-                        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
-                            Hi, I'm <span class="text-red-500">Martin James Espiritu</span>
+                        <span class="text-sm font-semibold tracking-wider text-red-500 uppercase block mb-1">Hi, I'm</span>
+                        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
+                            Martin James Espiritu
                         </h1>
-
-                        <h2 class="text-lg sm:text-xl font-semibold text-red-400 mt-2">
-                            BSIT - Web Development Track
-                        </h2>
                     </div>
 
+                    <h2 class="text-lg sm:text-xl font-semibold text-red-400">
+                        BSIT - Web Development Track
+                    </h2>
+
                     <p class="text-base sm:text-lg text-zinc-300 leading-relaxed font-normal bg-zinc-900/60 p-4 rounded-xl border border-zinc-800/80 backdrop-blur-md">
-                        Welcome to my portfolio here you can explore my personal information, achievements, and family
+                        Welcome to my portfolio! Here you can explore my personal information, achievements, educational background, and my family.
                     </p>
 
-                    <ul class="space-y-3 text-base sm:text-lg text-zinc-200 list-none font-normal">
+                    <ul class="space-y-2.5 text-base sm:text-lg text-zinc-200 list-none font-normal">
                         <li class="flex items-center space-x-3">
                             <span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block flex-shrink-0"></span>
                             <span>Aspiring Web Developer</span>
