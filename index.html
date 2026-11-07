@@ -1,3 +1,7 @@
+Claude
+
+
+My portfolio · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,39 +19,39 @@
     <script>
         let currentTab = 0;
         const totalTabs = 5;
-
+ 
         // Switch visible page tab
         function switchTab(index) {
             if (index < 0 || index >= totalTabs) return;
-
+ 
             // Hide all pages
             document.querySelectorAll('.page-section').forEach(sec => {
                 sec.classList.remove('active');
             });
-
+ 
             // Remove active style from all nav buttons
             document.querySelectorAll('.nav-link').forEach(nav => {
                 nav.classList.remove('active');
             });
-
+ 
             // Show selected page
             const targetPage = document.getElementById(`page-${index}`);
             if (targetPage) {
                 targetPage.classList.add('active');
             }
-
+ 
             // Highlight nav button
             const targetNav = document.getElementById(`nav-${index}`);
             if (targetNav) {
                 targetNav.classList.add('active');
             }
-
+ 
             currentTab = index;
-
+ 
             // Update bottom navigation button states
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
-
+ 
             if (prevBtn) {
                 if (currentTab === 0) {
                     prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
@@ -55,7 +59,7 @@
                     prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                 }
             }
-
+ 
             if (nextBtn) {
                 if (currentTab === totalTabs - 1) {
                     nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
@@ -63,22 +67,22 @@
                     nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                 }
             }
-
+ 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
+ 
         function nextPage() {
             if (currentTab < totalTabs - 1) {
                 switchTab(currentTab + 1);
             }
         }
-
+ 
         function prevPage() {
             if (currentTab > 0) {
                 switchTab(currentTab - 1);
             }
         }
-
+ 
         // Initialize Lucide icons on DOM Content Loaded
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
@@ -95,7 +99,7 @@
             color: #f4f4f5;
             overflow: hidden;
         }
-
+ 
         /* Subtle Matrix / Binary Background Canvas */
         #binary-canvas {
             position: fixed;
@@ -104,22 +108,22 @@
             width: 100vw;
             height: 100vh;
             z-index: 0;
-            opacity: 0.35; /* Increased opacity to bring back visible 1010101 matrix effect */
+            opacity: 1; /* Full brightness honeycomb background */
             pointer-events: none;
         }
-
+ 
         .nav-link.active {
             font-weight: 600;
             color: #ffffff;
-            border-bottom: 2px solid #ef4444;
+            border-bottom: 2px solid #3b82f6;
         }
-
+ 
         .page-section {
             display: none;
             height: calc(100vh - 160px);
             overflow-y: auto;
         }
-
+ 
         .page-section::-webkit-scrollbar {
             width: 4px;
         }
@@ -127,80 +131,182 @@
             background: #27272a;
             border-radius: 4px;
         }
-
+ 
         .page-section.active {
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
-
+ 
         /* Nav Button Illumination / Glow Effects */
         .btn-glow {
             position: relative;
             transition: all 0.3s ease;
         }
         .btn-glow:not(.opacity-50):hover {
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6), 0 0 30px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6), 0 0 30px rgba(59, 130, 246, 0.3);
             transform: translateY(-1px);
         }
         .btn-glow:not(.opacity-50):active {
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.9);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.9);
         }
     </style>
     
     <script>
-        // Matrix / Binary effect animation
+        // Honeycomb background - 3D black cells with neon yellow glowing outlines lit by a long-range cursor light
         document.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('binary-canvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
-
+ 
+            const hexSize = 60;               // hexagon radius
+            const gap = 4;                    // trench between the raised cells
+            const bevel = 0.22;               // 3D bevel depth (fraction of cell size)
+            const lightRadius = 800;          // how far the cursor light reaches (px)
+            const coreRadius = 170;           // size of the bright core around the cursor (px)
+            const baseGlow = 0.35;            // outline brightness everywhere (keeps the background bright)
+            const faintLight = 0.22;          // faint 3D shading on cells far from the cursor
+            let w = 0, h = 0;
+            let cells = [];
+ 
+            function norm3(x, y, z) {
+                const l = Math.hypot(x, y, z) || 1;
+                return [x / l, y / l, z / l];
+            }
+ 
+            // Build the symmetrical 3D honeycomb geometry
+            function buildCells() {
+                cells = [];
+                const hexW = Math.sqrt(3) * hexSize;
+                const hexH = 1.5 * hexSize;
+                for (let row = -1; row * hexH < h + hexSize * 2; row++) {
+                    const offset = (row % 2 === 0) ? 0 : hexW / 2;
+                    for (let col = -1; col * hexW < w + hexW * 2; col++) {
+                        const cx = col * hexW + offset;
+                        const cy = row * hexH;
+                        const outer = [], inner = [], normals = [];
+                        for (let i = 0; i < 6; i++) {
+                            const a = Math.PI / 3 * i + Math.PI / 6;
+                            const x = cx + (hexSize - gap) * Math.cos(a);
+                            const y = cy + (hexSize - gap) * Math.sin(a);
+                            outer.push([x, y]);
+                            inner.push([cx + (x - cx) * (1 - bevel), cy + (y - cy) * (1 - bevel)]);
+                        }
+                        // Normal of each slanted bevel face (points outward and up)
+                        for (let i = 0; i < 6; i++) {
+                            const am = Math.PI / 3 * i + Math.PI / 6 + Math.PI / 6;
+                            normals.push(norm3(Math.cos(am), Math.sin(am), 1));
+                        }
+                        cells.push({ cx, cy, outer, inner, normals });
+                    }
+                }
+            }
+ 
             function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
+                const dpr = window.devicePixelRatio || 1;
+                w = window.innerWidth;
+                h = window.innerHeight;
+                canvas.width = w * dpr;
+                canvas.height = h * dpr;
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                buildCells();
             }
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
-
-            const chars = '01';
-            const fontSize = 14;
-            let columns = Math.floor(canvas.width / fontSize);
-            let drops = Array(columns).fill(1);
-
-            function drawBinary() {
-                ctx.fillStyle = 'rgba(9, 9, 11, 0.15)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.font = `${fontSize}px monospace`;
-
-                for (let i = 0; i < drops.length; i++) {
-                    // Dark red gradient colors for matrix rain
-                    ctx.fillStyle = Math.random() > 0.5 ? '#ef4444' : '#991b1b';
-                    const text = chars.charAt(Math.floor(Math.random() * chars.length));
-                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.985) {
-                        drops[i] = 0;
-                    }
-                    drops[i]++;
+ 
+            // Cursor light: closer cells glow brighter, farther ones stay at the base glow
+            const mouse = { x: -9999, y: -9999 };
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+            window.addEventListener('touchmove', (e) => {
+                if (e.touches[0]) {
+                    mouse.x = e.touches[0].clientX;
+                    mouse.y = e.touches[0].clientY;
                 }
+            }, { passive: true });
+            document.addEventListener('mouseleave', () => {
+                mouse.x = -9999;
+                mouse.y = -9999;
+            });
+ 
+            const ambientDir = norm3(-0.5, -0.7, 1);   // soft fixed light from top-left
+            const lightHeight = 180;                   // how high the cursor light sits above the cells
+ 
+            function polygon(pts) {
+                ctx.beginPath();
+                ctx.moveTo(pts[0][0], pts[0][1]);
+                for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+                ctx.closePath();
             }
-
-            // Slower falling speed (75ms interval)
-            setInterval(drawBinary, 75);
+ 
+            function drawHoneycomb() {
+                // Black background / trenches
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, w, h);
+ 
+                for (const c of cells) {
+                    const dx = mouse.x - c.cx, dy = mouse.y - c.cy;
+                    // Sci-fi light: a bright energy core plus a long soft halo that reaches far out
+                    const dist = Math.hypot(dx, dy);
+                    const core = Math.exp(-Math.pow(dist / coreRadius, 2));
+                    const halo = Math.pow(Math.max(0, 1 - dist / lightRadius), 1.5);
+                    const light = Math.min(1, 0.6 * core + 0.6 * halo);
+                    const cursorDir = norm3(dx, dy, lightHeight);
+ 
+                    // Slanted bevel faces: lit yellow on the side facing the cursor, dark on the far side
+                    for (let i = 0; i < 6; i++) {
+                        const n = c.normals[i];
+                        const amb = Math.max(0, n[0] * ambientDir[0] + n[1] * ambientDir[1] + n[2] * ambientDir[2]);
+                        const cur = Math.max(0, n[0] * cursorDir[0] + n[1] * cursorDir[1] + n[2] * cursorDir[2]);
+                        const level = faintLight * amb * amb + light * cur * cur;
+                        polygon([c.outer[i], c.outer[(i + 1) % 6], c.inner[(i + 1) % 6], c.inner[i]]);
+                        ctx.fillStyle = `rgba(255, 225, 0, ${Math.min(0.85, 0.03 + 0.7 * level)})`;
+                        ctx.fill();
+                    }
+ 
+                    // Black top face with a faint yellow sheen near the cursor
+                    polygon(c.inner);
+                    ctx.fillStyle = '#000000';
+                    ctx.fill();
+                    ctx.fillStyle = `rgba(255, 235, 0, ${0.015 + 0.06 * light})`;
+                    ctx.fill();
+ 
+                    // Thin inner edge where the bevel meets the top
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = `rgba(255, 240, 80, ${0.06 + 0.35 * light})`;
+                    ctx.stroke();
+ 
+                    polygon(c.outer);
+ 
+                    // Soft outer glow around the outline
+                    ctx.lineWidth = 4 + 6 * light;
+                    ctx.strokeStyle = `rgba(255, 230, 0, ${0.08 + 0.25 * light})`;
+                    ctx.stroke();
+ 
+                    // Bright neon yellow outline
+                    ctx.lineWidth = 1.5 + 1 * light;
+                    ctx.strokeStyle = `rgba(${240 + 15 * core}, 255, ${20 + 180 * core}, ${Math.min(1, baseGlow + 0.65 * light)})`;
+                    ctx.stroke();
+                }
+                requestAnimationFrame(drawHoneycomb);
+            }
+ 
+            requestAnimationFrame(drawHoneycomb);
         });
     </script>
 </head>
-<body class="h-screen w-screen flex flex-col justify-between bg-[#09090b] text-zinc-100 overflow-hidden relative selection:bg-red-500/30">
-
+<body class="h-screen w-screen flex flex-col justify-between bg-[#09090b] text-zinc-100 overflow-hidden relative selection:bg-blue-500/30">
+ 
     <!-- Binary Matrix Background Canvas -->
     <canvas id="binary-canvas"></canvas>
-
+ 
     <!-- Top Navigation Bar Header -->
     <header class="w-full bg-[#121215]/90 backdrop-blur-md border-b border-zinc-800/80 px-6 py-4 fixed top-0 left-0 z-50">
         <div class="max-w-6xl mx-auto flex items-center justify-between">
             <span class="text-lg font-medium tracking-tight text-zinc-200">My portfolio</span>
-
+ 
             <nav class="flex items-center space-x-6 text-sm text-zinc-400">
                 <button onclick="switchTab(0)" id="nav-0" class="nav-link py-1 hover:text-white transition-colors active">Home</button>
                 <button onclick="switchTab(1)" id="nav-1" class="nav-link py-1 hover:text-white transition-colors">About Me</button>
@@ -213,10 +319,10 @@
             </nav>
         </div>
     </header>
-
+ 
     <!-- Main Content Area Container -->
     <main class="flex-1 max-w-5xl w-full mx-auto px-6 pt-20 pb-20 relative z-10">
-
+ 
         <!-- 1. HOME SECTION -->
         <section id="page-0" class="page-section active">
             <div class="flex flex-col md:flex-row items-center justify-center gap-8 sm:gap-12 max-w-5xl mx-auto w-full">
@@ -226,42 +332,27 @@
                     <!-- Embedded New Photo -->
                     <img src="image_94dac1.png" onerror="this.onerror=null; this.src='1000029639.jpg';" alt="Martin James Espiritu" class="w-full h-full object-contain">
                 </div>
-
+ 
                 <!-- Right Side Personal Info & Welcome Text -->
                 <div class="w-full md:w-1/2 text-zinc-300 space-y-5 text-left">
                     <div>
-                        <span class="text-sm font-semibold tracking-wider text-red-500 uppercase block mb-1">Hi, I'm</span>
-                        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">
+                        <span class="text-sm font-semibold tracking-wider text-blue-500 uppercase block mb-1">Hi, I'm</span>
+                        <h1 class="text-2xl sm:text-4xl md:text-2xl lg:text-4xl font-bold tracking-tight text-white whitespace-nowrap">
                             Martin James Espiritu
                         </h1>
                     </div>
-
-                    <h2 class="text-lg sm:text-xl font-semibold text-red-400">
+ 
+                    <h2 class="text-lg sm:text-xl font-semibold text-blue-400">
                         BSIT - Web Development Track
                     </h2>
-
+ 
                     <p class="text-base sm:text-lg text-zinc-300 leading-relaxed font-normal bg-zinc-900/60 p-4 rounded-xl border border-zinc-800/80 backdrop-blur-md">
                         Welcome to my portfolio! Here you can explore my personal information, achievements, educational background, and my family.
                     </p>
-
-                    <ul class="space-y-2.5 text-base sm:text-lg text-zinc-200 list-none font-normal">
-                        <li class="flex items-center space-x-3">
-                            <span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block flex-shrink-0"></span>
-                            <span>Aspiring Web Developer</span>
-                        </li>
-                        <li class="flex items-center space-x-3">
-                            <span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block flex-shrink-0"></span>
-                            <span>Programming: Python</span>
-                        </li>
-                        <li class="flex items-center space-x-3">
-                            <span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block flex-shrink-0"></span>
-                            <span>Web Tech: Core Web Development</span>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </section>
-
+ 
         <!-- 2. ABOUT ME SECTION -->
         <section id="page-1" class="page-section">
             <div class="max-w-6xl mx-auto flex flex-col justify-center h-full max-h-[82vh]">
@@ -270,11 +361,11 @@
                     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
                         Martin James Espiritu
                     </h1>
-                    <h2 class="text-xl sm:text-2xl font-semibold text-red-500 mt-1">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-blue-500 mt-1">
                         BSIT - Web development track
                     </h2>
                 </div>
-
+ 
                 <!-- WIDE 2-COLUMN GRID (NO SCROLLING) -->
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch text-left">
                     <!-- LEFT COLUMN: GENERAL DETAILS & SOCIAL LINKS -->
@@ -301,64 +392,67 @@
                                 <span class="text-white font-medium">BSIT (Web Development Track)</span>
                             </div>
                         </div>
-
+ 
                         <!-- SOCIAL LINKS BUTTONS -->
                         <div class="border-t border-zinc-800/80 pt-4 mt-4">
                             <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3">Connect with me</h3>
                             <div class="flex flex-wrap gap-3">
                                 <a href="https://www.facebook.com/share/18VNKd3n1u/" id="fb-link" target="_blank" rel="noreferrer" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg text-xs font-semibold text-white transition-all flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                                     <span>Facebook</span>
                                 </a>
                                 <a href="https://www.instagram.com/e_mjay11" id="insta-link" target="_blank" rel="noreferrer" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg text-xs font-semibold text-white transition-all flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
                                     <span>Instagram</span>
                                 </a>
                                 <a href="mailto:jameszzmartin21@gmail.com" id="gmail-link" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg text-xs font-semibold text-white transition-all flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 shrink-0" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                                     <span>Gmail</span>
                                 </a>
                             </div>
                         </div>
                     </div>
-
+ 
                     <!-- RIGHT COLUMN: SKILLS, HOBBIES & QUOTE -->
                     <div class="md:col-span-5 flex flex-col justify-between space-y-3">
                         <!-- SKILLS CARD -->
                         <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 backdrop-blur-md">
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-red-500 mb-2">Technical Skills</h3>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-blue-500 mb-2">Technical Skills</h3>
                             <div class="flex flex-wrap gap-2">
                                 <span class="bg-zinc-800/90 border border-zinc-700 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">💻 HTML/CSS</span>
                                 <span class="bg-zinc-800/90 border border-zinc-700 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">🐍 Python Programming</span>
                                 <span class="bg-zinc-800/90 border border-zinc-700 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">🛠️ Electronic Products Assembly & Servicing</span>
                             </div>
                         </div>
-
+ 
                         <!-- HOBBIES CARD -->
                         <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 backdrop-blur-md">
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-red-500 mb-2">Hobbies & Interests</h3>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-blue-500 mb-2">Hobbies & Interests</h3>
                             <div class="flex flex-wrap gap-2">
                                 <span class="bg-zinc-800/90 border border-zinc-700 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">🎨 Drawing / Painting</span>
                                 <span class="bg-zinc-800/90 border border-zinc-700 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">🥐 Baking & Culinary Arts</span>
                                 <span class="bg-zinc-800/90 border border-zinc-700 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">📚 Reading Books</span>
                             </div>
                         </div>
-
+ 
                         <!-- QUOTE CARD -->
-                        <div class="bg-zinc-900/90 border border-red-500/20 rounded-2xl p-4 backdrop-blur-md flex-1 flex flex-col justify-center">
+                        <div class="bg-zinc-900/90 border border-blue-500/20 rounded-2xl p-4 backdrop-blur-md flex-1 flex flex-col justify-center">
                             <p class="text-zinc-300 text-xs md:text-sm italic text-center">
                                 "No man ever steps in the same river twice, for it's not the same river and he's not the same man."
                             </p>
-                            <span class="block text-red-500 font-semibold text-xs text-right mt-2">— Heraclitus</span>
+                            <span class="block text-blue-500 font-semibold text-xs text-right mt-2">— Heraclitus</span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
+ 
         <!-- 3. EDUCATION SECTION -->
         <section id="page-2" class="page-section">
             <h1 class="text-3xl sm:text-4xl font-bold text-center text-white mb-8">
                 Education
             </h1>
-
+ 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto w-full">
                 <!-- Precious Angel Christian School -->
                 <div class="flex flex-col items-center text-center bg-zinc-900/70 p-5 rounded-lg border border-zinc-800">
@@ -366,52 +460,52 @@
                         <img src="image_a7ae1e.png" alt="Precious Angel Christian School" class="w-full h-full object-contain rounded-full">
                     </div>
                     <h3 class="text-base font-semibold text-white mb-1">Precious Angel Christian School</h3>
-                    <p class="text-sm font-medium text-red-400">(Grade 1)</p>
+                    <p class="text-sm font-medium text-blue-400">(Grade 1)</p>
                     <p class="text-xs text-zinc-400">(2011-2012)</p>
                 </div>
-
+ 
                 <!-- Josefa Cariño Elementary School -->
                 <div class="flex flex-col items-center text-center bg-zinc-900/70 p-5 rounded-lg border border-zinc-800">
                     <div class="w-36 h-36 mb-4 rounded-full border-2 border-zinc-700 bg-zinc-950 p-2 flex items-center justify-center overflow-hidden">
                         <img src="image_a7adc5.png" alt="Josefa Cariño Elementary School" class="w-full h-full object-contain rounded-full">
                     </div>
                     <h3 class="text-base font-semibold text-white mb-1">Josefa Cariño Elementary School</h3>
-                    <p class="text-sm font-medium text-red-400">(Grade 2-6)</p>
+                    <p class="text-sm font-medium text-blue-400">(Grade 2-6)</p>
                     <p class="text-xs text-zinc-400">(2013-2018)</p>
                 </div>
-
+ 
                 <!-- Baguio City High School -->
                 <div class="flex flex-col items-center text-center bg-zinc-900/70 p-5 rounded-lg border border-zinc-800">
                     <div class="w-36 h-36 mb-4 rounded-full border-2 border-zinc-700 bg-zinc-950 p-2 flex items-center justify-center overflow-hidden">
                         <img src="image_9dd01d.png" alt="Baguio City High School" class="w-full h-full object-contain rounded-full">
                     </div>
                     <h3 class="text-base font-semibold text-white mb-1">Baguio City High School</h3>
-                    <p class="text-xs font-medium text-red-400">Junior High school (Grade 7- 10)</p>
+                    <p class="text-xs font-medium text-blue-400">Junior High school (Grade 7- 10)</p>
                     <p class="text-xs text-zinc-400 mb-2">(2019-2023)</p>
-                    <p class="text-xs font-medium text-red-400">Senior High school (Grade 11-12)</p>
+                    <p class="text-xs font-medium text-blue-400">Senior High school (Grade 11-12)</p>
                     <p class="text-xs text-zinc-400">TVL - Home economics</p>
                     <p class="text-xs text-zinc-400">(2023-2025)</p>
                 </div>
-
+ 
                 <!-- University of the Cordilleras -->
                 <div class="flex flex-col items-center text-center bg-zinc-900/70 p-5 rounded-lg border border-zinc-800">
                     <div class="w-36 h-36 mb-4 rounded-full border-2 border-zinc-700 bg-zinc-950 p-2 flex items-center justify-center overflow-hidden">
                         <img src="image_9dcfc6.png" alt="University of the Cordilleras" class="w-full h-full object-contain rounded-full">
                     </div>
                     <h3 class="text-base font-semibold text-white mb-1">University of The Cordilleras</h3>
-                    <p class="text-xs font-medium text-red-400">Information Technology-</p>
+                    <p class="text-xs font-medium text-blue-400">Information Technology-</p>
                     <p class="text-xs text-zinc-300">Web Technology</p>
                     <p class="text-xs text-zinc-400 font-mono mt-1">(2026-PRESENT)</p>
                 </div>
             </div>
         </section>
-
+ 
         <!-- 4. ACHIEVEMENTS SECTION -->
         <section id="page-3" class="page-section">
             <h1 class="text-3xl sm:text-4xl font-bold text-center text-white mb-8">
                 School Achievements
             </h1>
-
+ 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto w-full">
                 <!-- Achievement 1 -->
                 <div class="flex flex-col items-center text-center bg-zinc-900/70 p-4 rounded-lg border border-zinc-800">
@@ -420,7 +514,7 @@
                     </div>
                     <p class="text-sm text-zinc-100 font-semibold">High school Diploma</p>
                 </div>
-
+ 
                 <!-- Achievement 2 -->
                 <div class="flex flex-col items-center text-center bg-zinc-900/70 p-4 rounded-lg border border-zinc-800">
                     <div class="w-full h-56 bg-zinc-950 border border-zinc-800 rounded-md mb-4 overflow-hidden">
@@ -428,7 +522,7 @@
                     </div>
                     <p class="text-sm text-zinc-100 font-semibold">400 hours of On-the-Job Training</p>
                 </div>
-
+ 
                 <!-- Achievement 3 -->
                 <div class="flex flex-col items-center text-center bg-zinc-900/70 p-4 rounded-lg border border-zinc-800">
                     <div class="w-full h-56 bg-zinc-950 border border-zinc-800 rounded-md mb-4 overflow-hidden">
@@ -436,7 +530,7 @@
                     </div>
                     <p class="text-sm text-zinc-100 font-semibold">Bread and Pastry Production National Certificate II</p>
                 </div>
-
+ 
                 <!-- Achievement 4 -->
                 <div class="flex flex-col items-center text-center bg-zinc-900/70 p-4 rounded-lg border border-zinc-800">
                     <div class="w-full h-56 bg-zinc-950 border border-zinc-800 rounded-md mb-4 overflow-hidden">
@@ -446,48 +540,49 @@
                 </div>
             </div>
         </section>
-
+ 
         <!-- 5. MY FAMILY SECTION -->
         <section id="page-4" class="page-section">
             <h1 class="text-3xl sm:text-4xl font-bold text-center text-white mb-8">
                 Family
             </h1>
-
+ 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto w-full">
                 <!-- Mother Card -->
                 <div class="flex flex-col items-center bg-zinc-900/70 p-6 rounded-lg border border-zinc-800">
                     <div class="w-full h-80 bg-zinc-950 border border-zinc-800 rounded-md mb-5 overflow-hidden">
                         <img src="https://placehold.co/400x500/18181b/71717a?text=Mother's+Photo" alt="Floricel Cortez" class="w-full h-full object-cover">
                     </div>
-                    <p class="text-sm font-semibold text-red-500 uppercase tracking-wider mb-1">My Mother</p>
+                    <p class="text-sm font-semibold text-blue-500 uppercase tracking-wider mb-1">My Mother</p>
                     <p class="text-xl sm:text-2xl text-white font-bold">Floricel Cortez</p>
                 </div>
-
+ 
                 <!-- Father Card -->
                 <div class="flex flex-col items-center bg-zinc-900/70 p-6 rounded-lg border border-zinc-800">
                     <div class="w-full h-80 bg-zinc-950 border border-zinc-800 rounded-md mb-5 overflow-hidden">
                         <img src="https://placehold.co/400x500/18181b/71717a?text=Father's+Photo" alt="Omar Espiritu" class="w-full h-full object-cover">
                     </div>
-                    <p class="text-sm font-semibold text-red-500 uppercase tracking-wider mb-1">My Father</p>
+                    <p class="text-sm font-semibold text-blue-500 uppercase tracking-wider mb-1">My Father</p>
                     <p class="text-xl sm:text-2xl text-white font-bold">Omar Espiritu</p>
                 </div>
             </div>
         </section>
-
+ 
     </main>
-
+ 
     <!-- Bottom Navigation Bar Controls -->
     <footer class="w-full bg-[#121215]/90 border-t border-zinc-800/80 py-4 fixed bottom-0 left-0 z-40">
         <div class="max-w-5xl mx-auto px-6 flex justify-end items-center space-x-3">
             <button id="prev-btn" onclick="prevPage()" class="btn-glow px-5 py-2 bg-zinc-800 text-zinc-200 text-xs rounded hover:bg-zinc-700 transition-all opacity-50 cursor-not-allowed flex items-center space-x-1">
                 <span>Previous</span>
             </button>
-            <button id="next-btn" onclick="nextPage()" class="btn-glow px-5 py-2 bg-red-600 text-white text-xs rounded hover:bg-red-500 transition-all flex items-center space-x-1 shadow-lg shadow-red-900/40">
+            <button id="next-btn" onclick="nextPage()" class="btn-glow px-5 py-2 bg-blue-600 text-white text-xs rounded hover:bg-blue-500 transition-all flex items-center space-x-1 shadow-lg shadow-blue-900/40">
                 <span>Next</span>
                 <i data-lucide="triangle" class="w-2.5 h-2.5 fill-current rotate-90"></i>
             </button>
         </div>
     </footer>
-
+ 
 </body>
 </html>
+Claude finished the response
