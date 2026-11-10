@@ -1,7 +1,3 @@
-Claude
-
-
-My portfolio · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +5,161 @@ My portfolio · HTML
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Portfolio - Martin James Espiritu</title>
     
+    <!-- Loading screen styles (inline so they show instantly, before anything else loads) -->
+    <style id="boot-style">
+        html, body { background: #000; margin: 0; }
+ 
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: radial-gradient(circle at center, #1c1400 0%, #070500 55%, #000 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 26px;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            transition: opacity 0.8s ease, visibility 0.8s ease, transform 0.8s ease;
+            overflow: hidden;
+        }
+        #loader.hide { opacity: 0; visibility: hidden; transform: scale(1.06); }
+ 
+        /* Honeycomb backdrop that surges outward from the centre */
+        #loader .hexbg {
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='104' height='180' viewBox='0 0 104 180'%3E%3Cg fill='none' stroke='%23ffc125' stroke-width='1.6'%3E%3Cpath d='M0 -60L52 -30L52 30L0 60L-52 30L-52 -30Z'/%3E%3Cpath d='M104 -60L156 -30L156 30L104 60L52 30L52 -30Z'/%3E%3Cpath d='M52 30L104 60L104 120L52 150L0 120L0 60Z'/%3E%3Cpath d='M0 120L52 150L52 210L0 240L-52 210L-52 150Z'/%3E%3Cpath d='M104 120L156 150L156 210L104 240L52 210L52 150Z'/%3E%3C/g%3E%3C/svg%3E");
+            -webkit-mask-image: radial-gradient(circle at center, #000 0%, transparent 65%);
+            mask-image: radial-gradient(circle at center, #000 0%, transparent 65%);
+            animation: bgSurge 1.6s ease-in-out infinite;
+        }
+        @keyframes bgSurge {
+            0%, 100% { opacity: 0.18; transform: scale(1); }
+            50%      { opacity: 0.55; transform: scale(1.04); }
+        }
+ 
+        #loader .hexwrap {
+            position: relative;
+            width: 130px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #loader .hexwrap svg { width: 100%; height: 100%; overflow: visible; }
+ 
+        #loader .hex-outer {
+            fill: none;
+            stroke: #ffc125;
+            stroke-width: 3;
+            stroke-linejoin: round;
+            stroke-dasharray: 90 240;
+            animation: chase 1.4s linear infinite;
+            filter: drop-shadow(0 0 6px #ffc125) drop-shadow(0 0 14px rgba(255,193,37,0.7));
+        }
+        #loader .hex-track {
+            fill: none;
+            stroke: rgba(255,193,37,0.18);
+            stroke-width: 2;
+            stroke-linejoin: round;
+        }
+        #loader .hex-inner {
+            fill: rgba(255,193,37,0.08);
+            stroke: rgba(255,214,90,0.7);
+            stroke-width: 1.5;
+            transform-origin: 50px 57px;
+            animation: corePulse 0.9s ease-in-out infinite;
+        }
+        #loader .bolt {
+            fill: #ffd54a;
+            transform-origin: 50px 57px;
+            animation: boltSurge 0.9s ease-in-out infinite;
+            filter: drop-shadow(0 0 5px #ffc125) drop-shadow(0 0 16px #ffb300);
+        }
+        @keyframes chase     { to { stroke-dashoffset: -330; } }
+        @keyframes corePulse { 0%, 100% { transform: scale(0.92); opacity: 0.6; } 50% { transform: scale(1.08); opacity: 1; } }
+        @keyframes boltSurge { 0%, 100% { transform: scale(0.95); opacity: 0.8; } 45% { transform: scale(1.12); opacity: 1; } 55% { opacity: 0.7; } 65% { opacity: 1; } }
+ 
+        /* Shockwave rings */
+        #loader .ring {
+            position: absolute;
+            left: 50%; top: 50%;
+            width: 130px; height: 130px;
+            margin: -65px 0 0 -65px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,193,37,0.65);
+            opacity: 0;
+            animation: shock 1.8s ease-out infinite;
+        }
+        #loader .ring.r2 { animation-delay: 0.6s; }
+        #loader .ring.r3 { animation-delay: 1.2s; }
+        @keyframes shock {
+            0%   { transform: scale(0.5); opacity: 0.8; }
+            100% { transform: scale(3.2); opacity: 0; }
+        }
+ 
+        #loader .l-name {
+            position: relative;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: #ffd54a;
+            text-shadow: 0 0 10px rgba(255,193,37,0.6);
+            text-align: center;
+        }
+        #loader .l-sub {
+            position: relative;
+            margin-top: -16px;
+            font-size: 11px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #a1a1aa;
+            animation: blink 1.2s ease-in-out infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+ 
+        #loader .bar {
+            position: relative;
+            width: 220px;
+            height: 3px;
+            background: rgba(255,193,37,0.15);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        #loader .bar-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #b8860b, #ffc125, #fff3b0);
+            box-shadow: 0 0 12px #ffc125;
+            animation: fillUp 2.6s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+        }
+        #loader.done .bar-fill { animation: none; width: 100%; transition: width 0.3s ease; }
+        @keyframes fillUp { to { width: 88%; } }
+    </style>
+    <script>
+        // Loading screen controller: shows for at least 1.8s, then fades out once the page has fully loaded
+        (function () {
+            var start = Date.now(), MIN = 1800, finished = false;
+            function finish() {
+                if (finished) return;
+                finished = true;
+                var l = document.getElementById('loader');
+                if (!l) return;
+                l.classList.add('done');
+                setTimeout(function () { l.classList.add('hide'); }, 350);
+                setTimeout(function () { if (l.parentNode) l.parentNode.removeChild(l); }, 1400);
+            }
+            function ready() { setTimeout(finish, Math.max(0, MIN - (Date.now() - start))); }
+            if (document.readyState === 'complete') ready();
+            else window.addEventListener('load', ready);
+            setTimeout(finish, 8000); // failsafe so it can never get stuck
+        })();
+    </script>
+ 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -18,7 +169,7 @@ My portfolio · HTML
     <!-- Global JavaScript Navigation Handlers -->
     <script>
         let currentTab = 0;
-        const totalTabs = 5;
+        const totalTabs = 4;
  
         // Switch visible page tab
         function switchTab(index) {
@@ -100,7 +251,6 @@ My portfolio · HTML
             overflow: hidden;
         }
  
-        /* Subtle Matrix / Binary Background Canvas */
         #binary-canvas {
             position: fixed;
             top: 0;
@@ -108,7 +258,7 @@ My portfolio · HTML
             width: 100vw;
             height: 100vh;
             z-index: 0;
-            opacity: 1; /* Full brightness honeycomb background */
+            opacity: 1;
             pointer-events: none;
         }
  
@@ -124,12 +274,13 @@ My portfolio · HTML
             overflow-y: auto;
         }
  
-        .page-section::-webkit-scrollbar {
-            width: 4px;
+        .page-section {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
-        .page-section::-webkit-scrollbar-thumb {
-            background: #27272a;
-            border-radius: 4px;
+        .page-section::-webkit-scrollbar {
+            display: none;
+            width: 0;
         }
  
         .page-section.active {
@@ -138,7 +289,68 @@ My portfolio · HTML
             justify-content: center;
         }
  
-        /* Nav Button Illumination / Glow Effects */
+ 
+        /* Education + Achievements page: gold & black theme */
+        #page-2.active { justify-content: flex-start; padding-top: 4px; }
+        .edu-title { text-align: center; font-size: 2.25rem; font-weight: 800; margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, #b8860b, #ffd54a, #b8860b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .edu-heading { font-size: .8rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: #ffc125;
+            margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid rgba(255,193,37,.35); }
+        .edu-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; max-width: 64rem; width: 100%; margin: 0 auto; padding-bottom: 1.5rem; }
+        @media (min-width: 1024px) { .edu-grid { grid-template-columns: 1fr 1fr; } }
+        .tl { position: relative; padding-left: 34px; }
+        .tl::before { content: ''; position: absolute; left: 11px; top: 10px; bottom: 10px; width: 2px;
+            background: linear-gradient(#ffc125, rgba(255,193,37,.15)); }
+        .tl-item { position: relative; margin-bottom: 14px; }
+        .tl-dot { position: absolute; left: -31px; top: 26px; width: 14px; height: 14px; border-radius: 50%;
+            background: #ffc125; border: 3px solid #000; box-shadow: 0 0 0 1px #ffc125, 0 0 12px rgba(255,193,37,.8); }
+        .edu-card, .ach-card { display: flex; align-items: center; gap: 14px; padding: 14px;
+            background: rgba(0,0,0,.88); border: 1px solid rgba(255,193,37,.3); border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0,0,0,.6); transition: border-color .25s, box-shadow .25s; }
+        .edu-card:hover, .ach-card:hover { border-color: rgba(255,193,37,.75); box-shadow: 0 0 18px rgba(255,193,37,.25); }
+        .edu-logo { flex: none; width: 64px; height: 64px; border-radius: 50%; padding: 4px; overflow: hidden;
+            background: #0a0a0a; border: 2px solid rgba(255,193,37,.6); display: flex; align-items: center; justify-content: center; }
+        .edu-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+        .edu-name { color: #ffffff; font-weight: 700; font-size: .98rem; line-height: 1.25; }
+        .edu-level { color: #ffd54a; font-weight: 600; font-size: .82rem; margin-top: 2px; }
+        .edu-sub { color: #e4e4e7; font-size: .8rem; }
+        .edu-years { color: #d4d4d8; font-size: .78rem; margin-top: 2px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+        .ach-list { display: flex; flex-direction: column; gap: 14px; }
+        .ach-thumb { flex: none; width: 120px; height: 86px; border-radius: 8px; overflow: hidden; display: block;
+            border: 1px solid rgba(255,193,37,.5); background: #0a0a0a; }
+        .ach-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform .3s; }
+        .ach-thumb:hover img { transform: scale(1.08); }
+ 
+        .edu-card p, .edu-card h3, .ach-card p, .ach-card h3, .edu-title, .edu-heading { margin-top: 0; margin-bottom: 0; }
+        .edu-title { margin-bottom: clamp(.4rem, 1.5vh, 1rem); }
+        .edu-heading { margin-bottom: clamp(.4rem, 1.5vh, .8rem); }
+        .edu-text { min-width: 0; }
+        .edu-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 10px; }
+        .edu-meta .edu-years { margin-top: 0; }
+        .edu-text, .edu-text > * { line-height: 1.2; }
+        .edu-name, .ach-text .edu-years { margin: 0; }
+        /* No scrolling anywhere: the Education page scales to fit the screen instead */
+        .page-section { overflow: hidden !important; }
+        #page-2.active { justify-content: flex-start; padding-top: 0; }
+        .edu-title { font-size: clamp(1.3rem, 4.2vh, 2rem); margin-bottom: clamp(.4rem, 1.5vh, 1rem); }
+        .edu-grid { flex: 1; min-height: 0; grid-template-columns: 1fr 1fr !important; grid-template-rows: minmax(0, 1fr);
+            gap: clamp(.8rem, 2.5vw, 2rem); padding-bottom: 0; }
+        .edu-grid > div { display: flex; flex-direction: column; min-height: 0; }
+        .edu-heading { margin-bottom: clamp(.4rem, 1.5vh, .8rem); padding-bottom: .3rem; }
+        .tl { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(6px, 1.2vh, 12px); }
+        .tl::before { top: 10%; bottom: 10%; }
+        .tl-item { flex: 1; min-height: 0; margin-bottom: 0; display: flex; }
+        .tl-dot { top: 50%; margin-top: -7px; }
+        .edu-card { flex: 1; min-height: 0; padding: clamp(5px, 1.2vh, 12px) 12px; gap: 12px; overflow: hidden; }
+        .edu-logo { width: clamp(34px, 6.5vh, 60px); height: clamp(34px, 6.5vh, 60px); }
+        .edu-name { font-size: clamp(.74rem, 1.9vh, .98rem); }
+        .edu-level { font-size: clamp(.68rem, 1.6vh, .82rem); }
+        .edu-sub { font-size: clamp(.66rem, 1.55vh, .8rem); }
+        .edu-years { font-size: clamp(.64rem, 1.5vh, .78rem); margin-top: 1px; }
+        .ach-list { flex: 1; min-height: 0; gap: clamp(6px, 1.2vh, 12px); }
+        .ach-card { flex: 1; min-height: 0; padding: clamp(5px, 1.2vh, 10px) 12px; overflow: hidden; }
+        .ach-thumb { width: clamp(70px, 9vw, 120px); height: auto; align-self: stretch; }
+ 
         .btn-glow {
             position: relative;
             transition: all 0.3s ease;
@@ -153,19 +365,18 @@ My portfolio · HTML
     </style>
     
     <script>
-        // Honeycomb background - 3D black cells with neon yellow glowing outlines lit by a long-range cursor light
+        // Honeycomb background - reversible-sequin style: cells near the cursor get pressed and flip to their gold side
         document.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('binary-canvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
  
-            const hexSize = 60;               // hexagon radius
-            const gap = 4;                    // trench between the raised cells
-            const bevel = 0.22;               // 3D bevel depth (fraction of cell size)
-            const lightRadius = 800;          // how far the cursor light reaches (px)
-            const coreRadius = 170;           // size of the bright core around the cursor (px)
-            const baseGlow = 0.35;            // outline brightness everywhere (keeps the background bright)
-            const faintLight = 0.22;          // faint 3D shading on cells far from the cursor
+            const hexSize = 28;               // smaller cells
+            const gap = 2.5;                  // trench between cells
+            const bevel = 0.22;               // bevel depth
+            const pressRadius = 110;          // how far the "press" reaches (px)
+            const baseGlow = 0.35;
+            const faintLight = 0.22;
             let w = 0, h = 0;
             let cells = [];
  
@@ -174,32 +385,28 @@ My portfolio · HTML
                 return [x / l, y / l, z / l];
             }
  
-            // Build the symmetrical 3D honeycomb geometry
+            // Geometry is stored relative to each cell's centre so it can flip around its own middle
             function buildCells() {
                 cells = [];
                 const hexW = Math.sqrt(3) * hexSize;
                 const hexH = 1.5 * hexSize;
+                const outer = [], inner = [], normals = [];
+                for (let i = 0; i < 6; i++) {
+                    const a = Math.PI / 3 * i + Math.PI / 6;
+                    const x = (hexSize - gap) * Math.cos(a);
+                    const y = (hexSize - gap) * Math.sin(a);
+                    outer.push([x, y]);
+                    inner.push([x * (1 - bevel), y * (1 - bevel)]);
+                    const am = a + Math.PI / 6;
+                    normals.push(norm3(Math.cos(am), Math.sin(am), 1));
+                }
                 for (let row = -1; row * hexH < h + hexSize * 2; row++) {
                     const offset = (row % 2 === 0) ? 0 : hexW / 2;
                     for (let col = -1; col * hexW < w + hexW * 2; col++) {
-                        const cx = col * hexW + offset;
-                        const cy = row * hexH;
-                        const outer = [], inner = [], normals = [];
-                        for (let i = 0; i < 6; i++) {
-                            const a = Math.PI / 3 * i + Math.PI / 6;
-                            const x = cx + (hexSize - gap) * Math.cos(a);
-                            const y = cy + (hexSize - gap) * Math.sin(a);
-                            outer.push([x, y]);
-                            inner.push([cx + (x - cx) * (1 - bevel), cy + (y - cy) * (1 - bevel)]);
-                        }
-                        // Normal of each slanted bevel face (points outward and up)
-                        for (let i = 0; i < 6; i++) {
-                            const am = Math.PI / 3 * i + Math.PI / 6 + Math.PI / 6;
-                            normals.push(norm3(Math.cos(am), Math.sin(am), 1));
-                        }
-                        cells.push({ cx, cy, outer, inner, normals });
+                        cells.push({ cx: col * hexW + offset, cy: row * hexH, flip: 0, phase: Math.random() });
                     }
                 }
+                cells.geo = { outer, inner, normals };
             }
  
             function resizeCanvas() {
@@ -214,25 +421,14 @@ My portfolio · HTML
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
  
-            // Cursor light: closer cells glow brighter, farther ones stay at the base glow
             const mouse = { x: -9999, y: -9999 };
-            window.addEventListener('mousemove', (e) => {
-                mouse.x = e.clientX;
-                mouse.y = e.clientY;
-            });
+            window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
             window.addEventListener('touchmove', (e) => {
-                if (e.touches[0]) {
-                    mouse.x = e.touches[0].clientX;
-                    mouse.y = e.touches[0].clientY;
-                }
+                if (e.touches[0]) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
             }, { passive: true });
-            document.addEventListener('mouseleave', () => {
-                mouse.x = -9999;
-                mouse.y = -9999;
-            });
+            document.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
  
-            const ambientDir = norm3(-0.5, -0.7, 1);   // soft fixed light from top-left
-            const lightHeight = 180;                   // how high the cursor light sits above the cells
+            const ambientDir = norm3(-0.5, -0.7, 1);
  
             function polygon(pts) {
                 ctx.beginPath();
@@ -242,53 +438,89 @@ My portfolio · HTML
             }
  
             function drawHoneycomb() {
-                // Black background / trenches
                 ctx.fillStyle = '#000000';
                 ctx.fillRect(0, 0, w, h);
  
-                for (const c of cells) {
-                    const dx = mouse.x - c.cx, dy = mouse.y - c.cy;
-                    // Sci-fi light: a bright energy core plus a long soft halo that reaches far out
-                    const dist = Math.hypot(dx, dy);
-                    const core = Math.exp(-Math.pow(dist / coreRadius, 2));
-                    const halo = Math.pow(Math.max(0, 1 - dist / lightRadius), 1.5);
-                    const light = Math.min(1, 0.6 * core + 0.6 * halo);
-                    const cursorDir = norm3(dx, dy, lightHeight);
+                const t = performance.now() / 1000;
+                const breath = 0.5 + 0.5 * Math.sin(t * 0.8);   // slow breathing on the idle side
+                const { outer, inner, normals } = cells.geo;
  
-                    // Slanted bevel faces: lit yellow on the side facing the cursor, dark on the far side
-                    for (let i = 0; i < 6; i++) {
-                        const n = c.normals[i];
-                        const amb = Math.max(0, n[0] * ambientDir[0] + n[1] * ambientDir[1] + n[2] * ambientDir[2]);
-                        const cur = Math.max(0, n[0] * cursorDir[0] + n[1] * cursorDir[1] + n[2] * cursorDir[2]);
-                        const level = faintLight * amb * amb + light * cur * cur;
-                        polygon([c.outer[i], c.outer[(i + 1) % 6], c.inner[(i + 1) % 6], c.inner[i]]);
-                        ctx.fillStyle = `rgba(255, 225, 0, ${Math.min(0.85, 0.03 + 0.7 * level)})`;
+                for (const c of cells) {
+                    // Pressed by the cursor -> flips quickly; relaxes back slowly once released
+                    const dist = Math.hypot(mouse.x - c.cx, mouse.y - c.cy);
+                    const target = Math.max(0, Math.min(1, (pressRadius - dist) / (pressRadius * 0.45)));
+                    c.flip += (target - c.flip) * (target > c.flip ? 0.22 : 0.035);
+                    if (c.flip < 0.001) c.flip = 0;
+ 
+                    // Flip around the cell's vertical axis, like a sequin turning over
+                    const angle = c.flip * Math.PI;
+                    const sx = Math.max(0.04, Math.abs(Math.cos(angle)));
+                    const showBack = c.flip > 0.5;
+                    const edge = 1 - sx;                       // brightest sheen mid-flip
+ 
+                    ctx.save();
+                    ctx.translate(c.cx, c.cy);
+                    ctx.scale(sx, 1);
+ 
+                    if (!showBack) {
+                        // FRONT: black cell, gold bevel, breathing outline
+                        const light = 0.4 + 0.4 * breath;
+                        for (let i = 0; i < 6; i++) {
+                            const n = normals[i];
+                            const amb = Math.max(0, n[0] * ambientDir[0] + n[1] * ambientDir[1] + n[2] * ambientDir[2]);
+                            polygon([outer[i], outer[(i + 1) % 6], inner[(i + 1) % 6], inner[i]]);
+                            ctx.fillStyle = `rgba(255, 190, 40, ${Math.min(0.9, 0.03 + 0.75 * (faintLight * amb * amb + 0.25 * light * amb))})`;
+                            ctx.fill();
+                        }
+                        polygon(inner);
+                        ctx.fillStyle = '#000';
                         ctx.fill();
+                        ctx.fillStyle = `rgba(255, 200, 60, ${0.015 + 0.05 * light})`;
+                        ctx.fill();
+                        ctx.lineWidth = 1 / sx;
+                        ctx.strokeStyle = `rgba(255, 210, 90, ${0.06 + 0.3 * light})`;
+                        ctx.stroke();
+                        polygon(outer);
+                        ctx.lineWidth = 3 + 3 * light;
+                        ctx.strokeStyle = `rgba(255, 185, 30, ${0.08 + 0.25 * light})`;
+                        ctx.stroke();
+                        ctx.lineWidth = 1.2;
+                        ctx.strokeStyle = `rgba(255, ${190 + 40 * breath}, ${30 + 60 * breath}, ${baseGlow + 0.4 * light})`;
+                        ctx.stroke();
+                    } else {
+                        // BACK: shiny gold sequin face, pressed in with a darker rim
+                        const pressed = (c.flip - 0.5) * 2;
+                        for (let i = 0; i < 6; i++) {
+                            const n = normals[i];
+                            const amb = Math.max(0, n[0] * ambientDir[0] + n[1] * ambientDir[1] + n[2] * ambientDir[2]);
+                            polygon([outer[i], outer[(i + 1) % 6], inner[(i + 1) % 6], inner[i]]);
+                            const lum = 90 + 120 * amb;
+                            ctx.fillStyle = `rgb(${Math.min(255, lum + 80)}, ${Math.min(255, lum * 0.8 + 50)}, ${lum * 0.2})`;
+                            ctx.fill();
+                        }
+                        polygon(inner);
+                        const g = ctx.createRadialGradient(-hexSize * 0.25, -hexSize * 0.3, 1, 0, 0, hexSize * 0.9);
+                        g.addColorStop(0, '#fff0a8');
+                        g.addColorStop(0.35, '#ffcc33');
+                        g.addColorStop(1, '#a8740a');
+                        ctx.fillStyle = g;
+                        ctx.fill();
+                        ctx.lineWidth = 1.2;
+                        ctx.strokeStyle = 'rgba(120, 75, 0, 0.8)';
+                        ctx.stroke();
+                        polygon(outer);
+                        ctx.lineWidth = 1.5;
+                        ctx.strokeStyle = `rgba(255, 225, 120, ${0.5 + 0.4 * pressed})`;
+                        ctx.stroke();
                     }
  
-                    // Black top face with a faint yellow sheen near the cursor
-                    polygon(c.inner);
-                    ctx.fillStyle = '#000000';
-                    ctx.fill();
-                    ctx.fillStyle = `rgba(255, 235, 0, ${0.015 + 0.06 * light})`;
-                    ctx.fill();
- 
-                    // Thin inner edge where the bevel meets the top
-                    ctx.lineWidth = 1;
-                    ctx.strokeStyle = `rgba(255, 240, 80, ${0.06 + 0.35 * light})`;
-                    ctx.stroke();
- 
-                    polygon(c.outer);
- 
-                    // Soft outer glow around the outline
-                    ctx.lineWidth = 4 + 6 * light;
-                    ctx.strokeStyle = `rgba(255, 230, 0, ${0.08 + 0.25 * light})`;
-                    ctx.stroke();
- 
-                    // Bright neon yellow outline
-                    ctx.lineWidth = 1.5 + 1 * light;
-                    ctx.strokeStyle = `rgba(${240 + 15 * core}, 255, ${20 + 180 * core}, ${Math.min(1, baseGlow + 0.65 * light)})`;
-                    ctx.stroke();
+                    // Flash of light as the sequin catches the light mid-flip
+                    if (edge > 0.05) {
+                        polygon(outer);
+                        ctx.fillStyle = `rgba(255, 240, 170, ${0.55 * edge})`;
+                        ctx.fill();
+                    }
+                    ctx.restore();
                 }
                 requestAnimationFrame(drawHoneycomb);
             }
@@ -299,10 +531,25 @@ My portfolio · HTML
 </head>
 <body class="h-screen w-screen flex flex-col justify-between bg-[#09090b] text-zinc-100 overflow-hidden relative selection:bg-blue-500/30">
  
-    <!-- Binary Matrix Background Canvas -->
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="hexbg"></div>
+        <div class="hexwrap">
+            <span class="ring"></span><span class="ring r2"></span><span class="ring r3"></span>
+            <svg viewBox="0 0 100 115" aria-hidden="true">
+                <polygon class="hex-track" points="50,3 96,29 96,86 50,112 4,86 4,29"/>
+                <polygon class="hex-outer" points="50,3 96,29 96,86 50,112 4,86 4,29"/>
+                <polygon class="hex-inner" points="50,22 80,39 80,75 50,92 20,75 20,39"/>
+                <polygon class="bolt" points="56,32 38,62 50,62 44,86 64,52 52,52"/>
+            </svg>
+        </div>
+        <div class="l-name">Martin James Espiritu</div>
+        <div class="l-sub">Loading portfolio</div>
+        <div class="bar"><div class="bar-fill"></div></div>
+    </div>
+ 
     <canvas id="binary-canvas"></canvas>
  
-    <!-- Top Navigation Bar Header -->
     <header class="w-full bg-[#121215]/90 backdrop-blur-md border-b border-zinc-800/80 px-6 py-4 fixed top-0 left-0 z-50">
         <div class="max-w-6xl mx-auto flex items-center justify-between">
             <span class="text-lg font-medium tracking-tight text-zinc-200">My portfolio</span>
@@ -311,8 +558,7 @@ My portfolio · HTML
                 <button onclick="switchTab(0)" id="nav-0" class="nav-link py-1 hover:text-white transition-colors active">Home</button>
                 <button onclick="switchTab(1)" id="nav-1" class="nav-link py-1 hover:text-white transition-colors">About Me</button>
                 <button onclick="switchTab(2)" id="nav-2" class="nav-link py-1 hover:text-white transition-colors">Education</button>
-                <button onclick="switchTab(3)" id="nav-3" class="nav-link py-1 hover:text-white transition-colors">Achievements</button>
-                <button onclick="switchTab(4)" id="nav-4" class="nav-link py-1 hover:text-white transition-colors">My Family</button>
+                <button onclick="switchTab(3)" id="nav-3" class="nav-link py-1 hover:text-white transition-colors">My Family</button>
                 <button class="p-1 text-zinc-400 hover:text-white transition-colors" aria-label="Search">
                     <i data-lucide="search" class="w-4 h-4"></i>
                 </button>
@@ -320,20 +566,15 @@ My portfolio · HTML
         </div>
     </header>
  
-    <!-- Main Content Area Container -->
     <main class="flex-1 max-w-5xl w-full mx-auto px-6 pt-20 pb-20 relative z-10">
  
         <!-- 1. HOME SECTION -->
         <section id="page-0" class="page-section active">
             <div class="flex flex-col md:flex-row items-center justify-center gap-8 sm:gap-12 max-w-5xl mx-auto w-full">
-                
-                <!-- Expanded Photo Container (Half of Screen Layout) -->
                 <div class="w-full md:w-1/2 h-[380px] sm:h-[460px] md:h-[500px] bg-zinc-900 border-2 border-zinc-800 rounded-2xl shadow-2xl overflow-hidden flex-shrink-0 flex items-center justify-center p-1">
-                    <!-- Embedded New Photo -->
                     <img src="image_94dac1.png" onerror="this.onerror=null; this.src='1000029639.jpg';" alt="Martin James Espiritu" class="w-full h-full object-contain">
                 </div>
  
-                <!-- Right Side Personal Info & Welcome Text -->
                 <div class="w-full md:w-1/2 text-zinc-300 space-y-5 text-left">
                     <div>
                         <span class="text-sm font-semibold tracking-wider text-blue-500 uppercase block mb-1">Hi, I'm</span>
@@ -356,7 +597,6 @@ My portfolio · HTML
         <!-- 2. ABOUT ME SECTION -->
         <section id="page-1" class="page-section">
             <div class="max-w-6xl mx-auto flex flex-col justify-center h-full max-h-[82vh]">
-                <!-- TOP HEADER MATCHING HOME PAGE STYLE -->
                 <div class="mb-4 text-left">
                     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
                         Martin James Espiritu
@@ -366,9 +606,7 @@ My portfolio · HTML
                     </h2>
                 </div>
  
-                <!-- WIDE 2-COLUMN GRID (NO SCROLLING) -->
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch text-left">
-                    <!-- LEFT COLUMN: GENERAL DETAILS & SOCIAL LINKS -->
                     <div class="md:col-span-7 bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6 backdrop-blur-md shadow-xl flex flex-col justify-between">
                         <div class="space-y-3 text-lg sm:text-xl text-zinc-200">
                             <div class="flex items-center">
@@ -393,7 +631,6 @@ My portfolio · HTML
                             </div>
                         </div>
  
-                        <!-- SOCIAL LINKS BUTTONS -->
                         <div class="border-t border-zinc-800/80 pt-4 mt-4">
                             <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3">Connect with me</h3>
                             <div class="flex flex-wrap gap-3">
@@ -413,9 +650,7 @@ My portfolio · HTML
                         </div>
                     </div>
  
-                    <!-- RIGHT COLUMN: SKILLS, HOBBIES & QUOTE -->
                     <div class="md:col-span-5 flex flex-col justify-between space-y-3">
-                        <!-- SKILLS CARD -->
                         <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 backdrop-blur-md">
                             <h3 class="text-xs font-bold uppercase tracking-wider text-blue-500 mb-2">Technical Skills</h3>
                             <div class="flex flex-wrap gap-2">
@@ -425,7 +660,6 @@ My portfolio · HTML
                             </div>
                         </div>
  
-                        <!-- HOBBIES CARD -->
                         <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 backdrop-blur-md">
                             <h3 class="text-xs font-bold uppercase tracking-wider text-blue-500 mb-2">Hobbies & Interests</h3>
                             <div class="flex flex-wrap gap-2">
@@ -435,7 +669,6 @@ My portfolio · HTML
                             </div>
                         </div>
  
-                        <!-- QUOTE CARD -->
                         <div class="bg-zinc-900/90 border border-blue-500/20 rounded-2xl p-4 backdrop-blur-md flex-1 flex flex-col justify-center">
                             <p class="text-zinc-300 text-xs md:text-sm italic text-center">
                                 "No man ever steps in the same river twice, for it's not the same river and he's not the same man."
@@ -447,108 +680,122 @@ My portfolio · HTML
             </div>
         </section>
  
-        <!-- 3. EDUCATION SECTION -->
+        <!-- 3. EDUCATION + ACHIEVEMENTS SECTION -->
         <section id="page-2" class="page-section">
-            <h1 class="text-3xl sm:text-4xl font-bold text-center text-white mb-8">
-                Education
-            </h1>
+            <h1 class="edu-title">Education</h1>
  
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto w-full">
-                <!-- Precious Angel Christian School -->
-                <div class="flex flex-col items-center text-center bg-zinc-900/70 p-5 rounded-lg border border-zinc-800">
-                    <div class="w-36 h-36 mb-4 rounded-full border-2 border-zinc-700 bg-zinc-950 p-2 flex items-center justify-center overflow-hidden">
-                        <img src="image_a7ae1e.png" alt="Precious Angel Christian School" class="w-full h-full object-contain rounded-full">
+            <div class="edu-grid">
+                <!-- LEFT: education timeline -->
+                <div>
+                    <h2 class="edu-heading">Timeline</h2>
+                    <div class="tl">
+                    <div class="tl-item">
+                        <span class="tl-dot"></span>
+                        <div class="edu-card">
+                            <div class="edu-logo"><img src="image_9dcfc6.png" alt="University of the Cordilleras"></div>
+                            <div class="edu-text">
+                                <h3 class="edu-name">University of the Cordilleras</h3>
+                                <div class="edu-meta"><p class="edu-level">College</p><p class="edu-years">2026 - PRESENT</p></div>
+                                <p class="edu-sub">Information Technology - Web Technology</p>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="text-base font-semibold text-white mb-1">Precious Angel Christian School</h3>
-                    <p class="text-sm font-medium text-blue-400">(Grade 1)</p>
-                    <p class="text-xs text-zinc-400">(2011-2012)</p>
+                    <div class="tl-item">
+                        <span class="tl-dot"></span>
+                        <div class="edu-card">
+                            <div class="edu-logo"><img src="image_9dd01d.png" alt="Baguio City High School"></div>
+                            <div class="edu-text">
+                                <h3 class="edu-name">Baguio City High School</h3>
+                                <div class="edu-meta"><p class="edu-level">Senior High School (Grade 11-12)</p><p class="edu-years">2023 - 2025</p></div>
+                                <p class="edu-sub">TVL - Home Economics</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <span class="tl-dot"></span>
+                        <div class="edu-card">
+                            <div class="edu-logo"><img src="image_9dd01d.png" alt="Baguio City High School"></div>
+                            <div class="edu-text">
+                                <h3 class="edu-name">Baguio City High School</h3>
+                                <div class="edu-meta"><p class="edu-level">Junior High School (Grade 7-10)</p><p class="edu-years">2019 - 2023</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <span class="tl-dot"></span>
+                        <div class="edu-card">
+                            <div class="edu-logo"><img src="image_a7adc5.png" alt="Josefa Cariño Elementary School"></div>
+                            <div class="edu-text">
+                                <h3 class="edu-name">Josefa Cariño Elementary School</h3>
+                                <div class="edu-meta"><p class="edu-level">Elementary (Grade 2-6)</p><p class="edu-years">2013 - 2018</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <span class="tl-dot"></span>
+                        <div class="edu-card">
+                            <div class="edu-logo"><img src="image_a7ae1e.png" alt="Precious Angel Christian School"></div>
+                            <div class="edu-text">
+                                <h3 class="edu-name">Precious Angel Christian School</h3>
+                                <div class="edu-meta"><p class="edu-level">Elementary (Grade 1)</p><p class="edu-years">2011 - 2012</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
                 </div>
  
-                <!-- Josefa Cariño Elementary School -->
-                <div class="flex flex-col items-center text-center bg-zinc-900/70 p-5 rounded-lg border border-zinc-800">
-                    <div class="w-36 h-36 mb-4 rounded-full border-2 border-zinc-700 bg-zinc-950 p-2 flex items-center justify-center overflow-hidden">
-                        <img src="image_a7adc5.png" alt="Josefa Cariño Elementary School" class="w-full h-full object-contain rounded-full">
+                <!-- RIGHT: achievements -->
+                <div>
+                    <h2 class="edu-heading">Achievements</h2>
+                    <div class="ach-list">
+                    <div class="ach-card">
+                        <a href="cert-diploma.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open High School Diploma">
+                            <img src="cert-diploma.jpg" alt="High School Diploma">
+                        </a>
+                        <div class="ach-text">
+                            <h3 class="edu-name">High school Diploma</h3>
+                            <p class="edu-years">Baguio City High School · April 15, 2025</p>
+                        </div>
                     </div>
-                    <h3 class="text-base font-semibold text-white mb-1">Josefa Cariño Elementary School</h3>
-                    <p class="text-sm font-medium text-blue-400">(Grade 2-6)</p>
-                    <p class="text-xs text-zinc-400">(2013-2018)</p>
-                </div>
- 
-                <!-- Baguio City High School -->
-                <div class="flex flex-col items-center text-center bg-zinc-900/70 p-5 rounded-lg border border-zinc-800">
-                    <div class="w-36 h-36 mb-4 rounded-full border-2 border-zinc-700 bg-zinc-950 p-2 flex items-center justify-center overflow-hidden">
-                        <img src="image_9dd01d.png" alt="Baguio City High School" class="w-full h-full object-contain rounded-full">
+                    <div class="ach-card">
+                        <a href="cert-ojt.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open 400 hours On-the-Job Training certificate">
+                            <img src="cert-ojt.jpg" alt="400 hours On-the-Job Training certificate">
+                        </a>
+                        <div class="ach-text">
+                            <h3 class="edu-name">400 hours of On-the-Job Training</h3>
+                            <p class="edu-years">Don Henrico's · Jan 13 - Mar 23, 2025</p>
+                        </div>
                     </div>
-                    <h3 class="text-base font-semibold text-white mb-1">Baguio City High School</h3>
-                    <p class="text-xs font-medium text-blue-400">Junior High school (Grade 7- 10)</p>
-                    <p class="text-xs text-zinc-400 mb-2">(2019-2023)</p>
-                    <p class="text-xs font-medium text-blue-400">Senior High school (Grade 11-12)</p>
-                    <p class="text-xs text-zinc-400">TVL - Home economics</p>
-                    <p class="text-xs text-zinc-400">(2023-2025)</p>
-                </div>
- 
-                <!-- University of the Cordilleras -->
-                <div class="flex flex-col items-center text-center bg-zinc-900/70 p-5 rounded-lg border border-zinc-800">
-                    <div class="w-36 h-36 mb-4 rounded-full border-2 border-zinc-700 bg-zinc-950 p-2 flex items-center justify-center overflow-hidden">
-                        <img src="image_9dcfc6.png" alt="University of the Cordilleras" class="w-full h-full object-contain rounded-full">
+                    <div class="ach-card">
+                        <a href="cert-nc2.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open Bread and Pastry Production NC II">
+                            <img src="cert-nc2.jpg" alt="Bread and Pastry Production NC II">
+                        </a>
+                        <div class="ach-text">
+                            <h3 class="edu-name">Bread and Pastry Production National Certificate II</h3>
+                            <p class="edu-years">Issued Dec 9, 2024 · valid until Dec 8, 2029</p>
+                        </div>
                     </div>
-                    <h3 class="text-base font-semibold text-white mb-1">University of The Cordilleras</h3>
-                    <p class="text-xs font-medium text-blue-400">Information Technology-</p>
-                    <p class="text-xs text-zinc-300">Web Technology</p>
-                    <p class="text-xs text-zinc-400 font-mono mt-1">(2026-PRESENT)</p>
+                    <div class="ach-card">
+                        <a href="cert-firstaid.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open Kitchen First Aid Safety Seminar certificate">
+                            <img src="cert-firstaid.jpg" alt="Kitchen First Aid Safety Seminar certificate">
+                        </a>
+                        <div class="ach-text">
+                            <h3 class="edu-name">Kitchen First Aid Safety Seminar</h3>
+                            <p class="edu-years">Philippine Red Cross · Dec 18, 2024</p>
+                        </div>
+                    </div>
+                    </div>
                 </div>
             </div>
         </section>
  
-        <!-- 4. ACHIEVEMENTS SECTION -->
+        <!-- 4. MY FAMILY SECTION -->
         <section id="page-3" class="page-section">
-            <h1 class="text-3xl sm:text-4xl font-bold text-center text-white mb-8">
-                School Achievements
-            </h1>
- 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto w-full">
-                <!-- Achievement 1 -->
-                <div class="flex flex-col items-center text-center bg-zinc-900/70 p-4 rounded-lg border border-zinc-800">
-                    <div class="w-full h-56 bg-zinc-950 border border-zinc-800 rounded-md mb-4 overflow-hidden">
-                        <img src="https://placehold.co/300x400/18181b/71717a?text=High+School+Diploma" alt="High School Diploma" class="w-full h-full object-cover">
-                    </div>
-                    <p class="text-sm text-zinc-100 font-semibold">High school Diploma</p>
-                </div>
- 
-                <!-- Achievement 2 -->
-                <div class="flex flex-col items-center text-center bg-zinc-900/70 p-4 rounded-lg border border-zinc-800">
-                    <div class="w-full h-56 bg-zinc-950 border border-zinc-800 rounded-md mb-4 overflow-hidden">
-                        <img src="https://placehold.co/300x400/18181b/71717a?text=400+Hours+OJT" alt="400 hours of On-the-Job Training" class="w-full h-full object-cover">
-                    </div>
-                    <p class="text-sm text-zinc-100 font-semibold">400 hours of On-the-Job Training</p>
-                </div>
- 
-                <!-- Achievement 3 -->
-                <div class="flex flex-col items-center text-center bg-zinc-900/70 p-4 rounded-lg border border-zinc-800">
-                    <div class="w-full h-56 bg-zinc-950 border border-zinc-800 rounded-md mb-4 overflow-hidden">
-                        <img src="https://placehold.co/300x400/18181b/71717a?text=NC+II+Certificate" alt="Bread and Pastry Production NC II" class="w-full h-full object-cover">
-                    </div>
-                    <p class="text-sm text-zinc-100 font-semibold">Bread and Pastry Production National Certificate II</p>
-                </div>
- 
-                <!-- Achievement 4 -->
-                <div class="flex flex-col items-center text-center bg-zinc-900/70 p-4 rounded-lg border border-zinc-800">
-                    <div class="w-full h-56 bg-zinc-950 border border-zinc-800 rounded-md mb-4 overflow-hidden">
-                        <img src="https://placehold.co/300x400/18181b/71717a?text=First+Aid+Training" alt="Kitchen First Aid Training" class="w-full h-full object-cover">
-                    </div>
-                    <p class="text-sm text-zinc-100 font-semibold">Kitchen First Aid Safety Seminar</p>
-                </div>
-            </div>
-        </section>
- 
-        <!-- 5. MY FAMILY SECTION -->
-        <section id="page-4" class="page-section">
             <h1 class="text-3xl sm:text-4xl font-bold text-center text-white mb-8">
                 Family
             </h1>
  
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto w-full">
-                <!-- Mother Card -->
                 <div class="flex flex-col items-center bg-zinc-900/70 p-6 rounded-lg border border-zinc-800">
                     <div class="w-full h-80 bg-zinc-950 border border-zinc-800 rounded-md mb-5 overflow-hidden">
                         <img src="https://placehold.co/400x500/18181b/71717a?text=Mother's+Photo" alt="Floricel Cortez" class="w-full h-full object-cover">
@@ -557,7 +804,6 @@ My portfolio · HTML
                     <p class="text-xl sm:text-2xl text-white font-bold">Floricel Cortez</p>
                 </div>
  
-                <!-- Father Card -->
                 <div class="flex flex-col items-center bg-zinc-900/70 p-6 rounded-lg border border-zinc-800">
                     <div class="w-full h-80 bg-zinc-950 border border-zinc-800 rounded-md mb-5 overflow-hidden">
                         <img src="https://placehold.co/400x500/18181b/71717a?text=Father's+Photo" alt="Omar Espiritu" class="w-full h-full object-cover">
@@ -570,7 +816,6 @@ My portfolio · HTML
  
     </main>
  
-    <!-- Bottom Navigation Bar Controls -->
     <footer class="w-full bg-[#121215]/90 border-t border-zinc-800/80 py-4 fixed bottom-0 left-0 z-40">
         <div class="max-w-5xl mx-auto px-6 flex justify-end items-center space-x-3">
             <button id="prev-btn" onclick="prevPage()" class="btn-glow px-5 py-2 bg-zinc-800 text-zinc-200 text-xs rounded hover:bg-zinc-700 transition-all opacity-50 cursor-not-allowed flex items-center space-x-1">
@@ -585,4 +830,3 @@ My portfolio · HTML
  
 </body>
 </html>
-Claude finished the response
