@@ -365,7 +365,7 @@
     </style>
     
     <script>
-        // Honeycomb background - reversible-sequin style: cells near the cursor get pressed and flip to their gold side
+        // Honeycomb background - gold cells that breathe slowly
         document.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('binary-canvas');
             if (!canvas) return;
@@ -374,7 +374,6 @@
             const hexSize = 28;               // smaller cells
             const gap = 2.5;                  // trench between cells
             const bevel = 0.22;               // bevel depth
-            const pressRadius = 110;          // how far the "press" reaches (px)
             const baseGlow = 0.35;
             const faintLight = 0.22;
             let w = 0, h = 0;
@@ -403,7 +402,7 @@
                 for (let row = -1; row * hexH < h + hexSize * 2; row++) {
                     const offset = (row % 2 === 0) ? 0 : hexW / 2;
                     for (let col = -1; col * hexW < w + hexW * 2; col++) {
-                        cells.push({ cx: col * hexW + offset, cy: row * hexH, flip: 0, phase: Math.random() });
+                        cells.push({ cx: col * hexW + offset, cy: row * hexH, glow: 0 });
                     }
                 }
                 cells.geo = { outer, inner, normals };
@@ -437,89 +436,49 @@
                 ctx.closePath();
             }
  
+            
             function drawHoneycomb() {
                 ctx.fillStyle = '#000000';
                 ctx.fillRect(0, 0, w, h);
  
                 const t = performance.now() / 1000;
-                const breath = 0.5 + 0.5 * Math.sin(t * 0.8);   // slow breathing on the idle side
+                const breath = 0.5 + 0.5 * Math.sin(t * 0.8);   // slow breathing
+                const light = 0.4 + 0.4 * breath;
                 const { outer, inner, normals } = cells.geo;
- 
+                
                 for (const c of cells) {
-                    // Pressed by the cursor -> flips quickly; relaxes back slowly once released
-                    const dist = Math.hypot(mouse.x - c.cx, mouse.y - c.cy);
-                    const target = Math.max(0, Math.min(1, (pressRadius - dist) / (pressRadius * 0.45)));
-                    c.flip += (target - c.flip) * (target > c.flip ? 0.22 : 0.035);
-                    if (c.flip < 0.001) c.flip = 0;
- 
-                    // Flip around the cell's vertical axis, like a sequin turning over
-                    const angle = c.flip * Math.PI;
-                    const sx = Math.max(0.04, Math.abs(Math.cos(angle)));
-                    const showBack = c.flip > 0.5;
-                    const edge = 1 - sx;                       // brightest sheen mid-flip
- 
                     ctx.save();
                     ctx.translate(c.cx, c.cy);
-                    ctx.scale(sx, 1);
  
-                    if (!showBack) {
-                        // FRONT: black cell, gold bevel, breathing outline
-                        const light = 0.4 + 0.4 * breath;
-                        for (let i = 0; i < 6; i++) {
-                            const n = normals[i];
-                            const amb = Math.max(0, n[0] * ambientDir[0] + n[1] * ambientDir[1] + n[2] * ambientDir[2]);
-                            polygon([outer[i], outer[(i + 1) % 6], inner[(i + 1) % 6], inner[i]]);
-                            ctx.fillStyle = `rgba(255, 190, 40, ${Math.min(0.9, 0.03 + 0.75 * (faintLight * amb * amb + 0.25 * light * amb))})`;
-                            ctx.fill();
-                        }
-                        polygon(inner);
-                        ctx.fillStyle = '#000';
+                    // Bevel faces
+                    for (let i = 0; i < 6; i++) {
+                        const n = normals[i];
+                        const amb = Math.max(0, n[0] * ambientDir[0] + n[1] * ambientDir[1] + n[2] * ambientDir[2]);
+                        polygon([outer[i], outer[(i + 1) % 6], inner[(i + 1) % 6], inner[i]]);
+                        ctx.fillStyle = `rgba(255, 190, 40, ${Math.min(0.9, 0.03 + 0.75 * (faintLight * amb * amb + 0.25 * light * amb))})`;
                         ctx.fill();
-                        ctx.fillStyle = `rgba(255, 200, 60, ${0.015 + 0.05 * light})`;
-                        ctx.fill();
-                        ctx.lineWidth = 1 / sx;
-                        ctx.strokeStyle = `rgba(255, 210, 90, ${0.06 + 0.3 * light})`;
-                        ctx.stroke();
-                        polygon(outer);
-                        ctx.lineWidth = 3 + 3 * light;
-                        ctx.strokeStyle = `rgba(255, 185, 30, ${0.08 + 0.25 * light})`;
-                        ctx.stroke();
-                        ctx.lineWidth = 1.2;
-                        ctx.strokeStyle = `rgba(255, ${190 + 40 * breath}, ${30 + 60 * breath}, ${baseGlow + 0.4 * light})`;
-                        ctx.stroke();
-                    } else {
-                        // BACK: shiny gold sequin face, pressed in with a darker rim
-                        const pressed = (c.flip - 0.5) * 2;
-                        for (let i = 0; i < 6; i++) {
-                            const n = normals[i];
-                            const amb = Math.max(0, n[0] * ambientDir[0] + n[1] * ambientDir[1] + n[2] * ambientDir[2]);
-                            polygon([outer[i], outer[(i + 1) % 6], inner[(i + 1) % 6], inner[i]]);
-                            const lum = 90 + 120 * amb;
-                            ctx.fillStyle = `rgb(${Math.min(255, lum + 80)}, ${Math.min(255, lum * 0.8 + 50)}, ${lum * 0.2})`;
-                            ctx.fill();
-                        }
-                        polygon(inner);
-                        const g = ctx.createRadialGradient(-hexSize * 0.25, -hexSize * 0.3, 1, 0, 0, hexSize * 0.9);
-                        g.addColorStop(0, '#fff0a8');
-                        g.addColorStop(0.35, '#ffcc33');
-                        g.addColorStop(1, '#a8740a');
-                        ctx.fillStyle = g;
-                        ctx.fill();
-                        ctx.lineWidth = 1.2;
-                        ctx.strokeStyle = 'rgba(120, 75, 0, 0.8)';
-                        ctx.stroke();
-                        polygon(outer);
-                        ctx.lineWidth = 1.5;
-                        ctx.strokeStyle = `rgba(255, 225, 120, ${0.5 + 0.4 * pressed})`;
-                        ctx.stroke();
                     }
  
-                    // Flash of light as the sequin catches the light mid-flip
-                    if (edge > 0.05) {
-                        polygon(outer);
-                        ctx.fillStyle = `rgba(255, 240, 170, ${0.55 * edge})`;
-                        ctx.fill();
-                    }
+                    // Black top face
+                    polygon(inner);
+                    ctx.fillStyle = '#000';
+                    ctx.fill();
+                    ctx.fillStyle = `rgba(255, 200, 60, ${0.015 + 0.05 * light})`;
+                    ctx.fill();
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = `rgba(255, 210, 90, ${0.06 + 0.3 * light})`;
+                    ctx.stroke();
+ 
+                    // Breathing gold outline
+                    polygon(outer);
+                    ctx.setLineDash([]);
+                    ctx.lineWidth = 3 + 3 * light;
+                    ctx.strokeStyle = `rgba(255, 185, 30, ${0.08 + 0.25 * light})`;
+                    ctx.stroke();
+                    ctx.lineWidth = 1.2;
+                    ctx.strokeStyle = `rgba(255, ${190 + 40 * breath}, ${30 + 60 * breath}, ${baseGlow + 0.4 * light})`;
+                    ctx.stroke();
+ 
                     ctx.restore();
                 }
                 requestAnimationFrame(drawHoneycomb);
@@ -556,8 +515,8 @@
  
             <nav class="flex items-center space-x-6 text-sm text-zinc-400">
                 <button onclick="switchTab(0)" id="nav-0" class="nav-link py-1 hover:text-white transition-colors active">Home</button>
-                <button onclick="switchTab(1)" id="nav-1" class="nav-link py-1 hover:text-white transition-colors">About Me</button>
-                <button onclick="switchTab(2)" id="nav-2" class="nav-link py-1 hover:text-white transition-colors">Education</button>
+                <button onclick="switchTab(1)" id="nav-1" class="nav-link py-1 hover:text-white transition-colors">Personal Information</button>
+                <button onclick="switchTab(2)" id="nav-2" class="nav-link py-1 hover:text-white transition-colors">Education and Achievements</button>
                 <button onclick="switchTab(3)" id="nav-3" class="nav-link py-1 hover:text-white transition-colors">My Family</button>
                 <button class="p-1 text-zinc-400 hover:text-white transition-colors" aria-label="Search">
                     <i data-lucide="search" class="w-4 h-4"></i>
@@ -608,7 +567,7 @@
  
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch text-left">
                     <div class="md:col-span-7 bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6 backdrop-blur-md shadow-xl flex flex-col justify-between">
-                        <div class="space-y-3 text-lg sm:text-xl text-zinc-200">
+                        <div class="space-y-2 text-base sm:text-lg text-zinc-200">
                             <div class="flex items-center">
                                 <span class="w-36 font-bold text-zinc-400 shrink-0">Birthday:</span>
                                 <span class="text-white font-medium">November 21, 2007</span>
@@ -620,6 +579,18 @@
                             <div class="flex items-center">
                                 <span class="w-36 font-bold text-zinc-400 shrink-0">Location:</span>
                                 <span class="text-white font-medium">Baguio City, Benguet</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-36 font-bold text-zinc-400 shrink-0">Height:</span>
+                                <span class="text-white font-medium">5'2"</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-36 font-bold text-zinc-400 shrink-0">Weight:</span>
+                                <span class="text-white font-medium">55 kg</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-36 font-bold text-zinc-400 shrink-0">Civil Status:</span>
+                                <span class="text-white font-medium">Single</span>
                             </div>
                             <div class="flex items-center">
                                 <span class="w-36 font-bold text-zinc-400 shrink-0">Status:</span>
@@ -682,7 +653,7 @@
  
         <!-- 3. EDUCATION + ACHIEVEMENTS SECTION -->
         <section id="page-2" class="page-section">
-            <h1 class="edu-title">Education</h1>
+            <h1 class="edu-title">Education and Achievements</h1>
  
             <div class="edu-grid">
                 <!-- LEFT: education timeline -->
@@ -749,8 +720,8 @@
                     <h2 class="edu-heading">Achievements</h2>
                     <div class="ach-list">
                     <div class="ach-card">
-                        <a href="cert-diploma.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open High School Diploma">
-                            <img src="cert-diploma.jpg" alt="High School Diploma">
+                        <a href="high-school-diploma.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open High School Diploma">
+                            <img src="high-school-diploma.jpg" alt="High School Diploma">
                         </a>
                         <div class="ach-text">
                             <h3 class="edu-name">High school Diploma</h3>
@@ -758,8 +729,8 @@
                         </div>
                     </div>
                     <div class="ach-card">
-                        <a href="cert-ojt.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open 400 hours On-the-Job Training certificate">
-                            <img src="cert-ojt.jpg" alt="400 hours On-the-Job Training certificate">
+                        <a href="400-hours-on-the-job-training.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open 400 hours On-the-Job Training certificate">
+                            <img src="400-hours-on-the-job-training.jpg" alt="400 hours On-the-Job Training certificate">
                         </a>
                         <div class="ach-text">
                             <h3 class="edu-name">400 hours of On-the-Job Training</h3>
@@ -767,8 +738,8 @@
                         </div>
                     </div>
                     <div class="ach-card">
-                        <a href="cert-nc2.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open Bread and Pastry Production NC II">
-                            <img src="cert-nc2.jpg" alt="Bread and Pastry Production NC II">
+                        <a href="bread-and-pastry-production-nc-ii.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open Bread and Pastry Production NC II">
+                            <img src="bread-and-pastry-production-nc-ii.jpg" alt="Bread and Pastry Production NC II">
                         </a>
                         <div class="ach-text">
                             <h3 class="edu-name">Bread and Pastry Production National Certificate II</h3>
@@ -776,8 +747,8 @@
                         </div>
                     </div>
                     <div class="ach-card">
-                        <a href="cert-firstaid.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open Kitchen First Aid Safety Seminar certificate">
-                            <img src="cert-firstaid.jpg" alt="Kitchen First Aid Safety Seminar certificate">
+                        <a href="kitchen-first-aid-safety-seminar.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open Kitchen First Aid Safety Seminar certificate">
+                            <img src="kitchen-first-aid-safety-seminar.jpg" alt="Kitchen First Aid Safety Seminar certificate">
                         </a>
                         <div class="ach-text">
                             <h3 class="edu-name">Kitchen First Aid Safety Seminar</h3>
