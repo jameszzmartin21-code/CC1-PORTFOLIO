@@ -270,7 +270,7 @@
  
         .page-section {
             display: none;
-            height: calc(100vh - 160px);
+            height: calc(100vh - 138px);
             overflow-y: auto;
         }
  
@@ -332,12 +332,12 @@
         /* No scrolling anywhere: the Education page scales to fit the screen instead */
         .page-section { overflow: hidden !important; }
         #page-2.active { justify-content: flex-start; padding-top: 0; }
-        .edu-title { font-size: clamp(1.3rem, 4.2vh, 2rem); margin-bottom: clamp(.4rem, 1.5vh, 1rem); }
+        .edu-title { font-size: clamp(1.3rem, 4.2vh, 2rem); margin-bottom: clamp(.25rem, 1vh, .6rem); }
         .edu-grid { flex: 1; min-height: 0; grid-template-columns: 1fr 1fr !important; grid-template-rows: minmax(0, 1fr);
-            gap: clamp(.8rem, 2.5vw, 2rem); padding-bottom: 0; }
+            gap: clamp(.6rem, 1.6vw, 1.25rem); padding-bottom: 0; }
         .edu-grid > div { display: flex; flex-direction: column; min-height: 0; }
-        .edu-heading { margin-bottom: clamp(.4rem, 1.5vh, .8rem); padding-bottom: .3rem; }
-        .tl { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(6px, 1.2vh, 12px); }
+        .edu-heading { margin-bottom: clamp(.3rem, 1vh, .5rem); padding-bottom: .25rem; }
+        .tl { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: clamp(4px, .8vh, 8px); }
         .tl::before { top: 10%; bottom: 10%; }
         .tl-item { flex: 1; min-height: 0; margin-bottom: 0; display: flex; }
         .tl-dot { top: 50%; margin-top: -7px; }
@@ -350,6 +350,47 @@
         .ach-list { flex: 1; min-height: 0; gap: clamp(6px, 1.2vh, 12px); }
         .ach-card { flex: 1; min-height: 0; padding: clamp(5px, 1.2vh, 10px) 12px; overflow: hidden; }
         .ach-thumb { width: clamp(70px, 9vw, 120px); height: auto; align-self: stretch; }
+
+        /* Achievements: 2x2 grid of landscape certificates that fill their frames (click to see the whole one) */
+        .ach-list { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; align-content: start; gap: clamp(6px, 1vh, 10px); }
+        .ach-card { flex-direction: column; align-items: stretch; gap: clamp(4px, .8vh, 8px); padding: clamp(6px, 1vh, 10px); }
+        .ach-card { flex: none; }
+        .ach-thumb { width: 100%; flex: none; aspect-ratio: 16 / 10; height: auto; cursor: zoom-in; background: #050505; }
+        .ach-thumb img { object-fit: cover; object-position: center; }
+        /* Small diploma indicator under Senior High and Junior High */
+        .dip-btn { display: inline-flex; align-items: center; gap: 5px; margin-top: 4px; padding: 2px 9px;
+            font-family: inherit; font-weight: 600; font-size: clamp(.6rem, 1.3vh, .7rem); line-height: 1.4; color: #ffd54a; cursor: zoom-in;
+            background: rgba(255,193,37,.1); border: 1px solid rgba(255,193,37,.55); border-radius: 999px;
+            transition: background .2s, box-shadow .2s, color .2s; }
+        .dip-btn:hover { background: rgba(255,193,37,.22); color: #fff3b0; box-shadow: 0 0 10px rgba(255,193,37,.45); }
+        .dip-btn svg { flex: none; }
+        button.ach-thumb { padding: 0; margin: 0; font: inherit; color: inherit; -webkit-appearance: none; appearance: none; }
+        .ach-text { text-align: center; min-width: 0; }
+        .ach-text .edu-name { font-size: clamp(.68rem, 1.6vh, .85rem); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .ach-text .edu-years { font-size: clamp(.6rem, 1.35vh, .72rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* No empty gaps: cards only take the height they need (they can still shrink on short screens) */
+        #page-2.active { justify-content: center; }
+        .edu-grid { flex: 0 1 auto; }
+        .tl, .tl-item { flex: 0 1 auto; }
+        .edu-card { flex: 1 1 auto; padding: clamp(5px, 1vh, 9px) 12px; }
+
+        /* Certificate viewer (opens on the page instead of a new tab) */
+        .lb { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,.88); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility .25s ease; }
+        .lb.open { opacity: 1; visibility: visible; }
+        .lb figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 92vw;
+            transform: scale(.94); transition: transform .25s ease; }
+        .lb.open figure { transform: scale(1); }
+        .lb img { max-width: 92vw; max-height: 82vh; object-fit: contain; border-radius: 10px;
+            border: 1px solid rgba(255,193,37,.6); box-shadow: 0 0 30px rgba(255,193,37,.25); background: #0a0a0a; }
+        .lb figcaption { color: #ffd54a; font-weight: 600; font-size: .9rem; text-align: center; }
+        .lb figcaption span { display: block; color: #d4d4d8; font-weight: 400; font-size: .78rem; margin-top: 2px; }
+        .lb-close { position: absolute; top: 16px; right: 20px; width: 40px; height: 40px; border-radius: 50%;
+            border: 1px solid rgba(255,193,37,.6); background: rgba(0,0,0,.6); color: #ffd54a; font-size: 24px; line-height: 1;
+            cursor: pointer; transition: background .2s, box-shadow .2s; }
+        .lb-close:hover { background: rgba(255,193,37,.15); box-shadow: 0 0 14px rgba(255,193,37,.5); }
  
         .btn-glow {
             position: relative;
@@ -365,49 +406,71 @@
     </style>
     
     <script>
-        // Honeycomb background - gold cells that breathe slowly
+        // Honeycomb background - dark raised hexagon tiles at different heights with light glowing up through the gaps,
+        // gold light flowing off the cursor in random directions, and a mouse-driven 3D tilt
         document.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('binary-canvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
- 
-            const hexSize = 28;               // smaller cells
-            const gap = 2.5;                  // trench between cells
-            const bevel = 0.22;               // bevel depth
-            const baseGlow = 0.35;
-            const faintLight = 0.22;
+
+            const hexSize = 34;               // tile size
+            const gap = 1.8;                  // gap between tiles (where the light shines through)
+            const lift = 0.045;               // how far raised tiles lean with the view (3D depth)
+            const maxLift = 11;               // limit of that lean (px)
+            const maxLights = 60;             // how many gold light streaks can run at once
+            const spawnEvery = 50;            // ms between new light streaks while the cursor is on the page
+            const maxTilt = 8;                // 3D tilt strength (degrees)
+            const perspective = 1200;         // 3D depth (px) - lower = stronger 3D
+            const tiltScale = 1.18;           // slight zoom so the tilted edges never show
             let w = 0, h = 0;
-            let cells = [];
- 
-            function norm3(x, y, z) {
-                const l = Math.hypot(x, y, z) || 1;
-                return [x / l, y / l, z / l];
+            let cells = [], verts = [], edges = [];
+
+            // Unit hexagon, wall directions and wall shading (light from the top-left)
+            const unit = [], normals = [], wallColor = [];
+            for (let i = 0; i < 6; i++) {
+                const a = Math.PI / 3 * i + Math.PI / 6;
+                unit.push([Math.cos(a), Math.sin(a)]);
+                const am = a + Math.PI / 6;
+                normals.push([Math.cos(am), Math.sin(am)]);
+                const lit = 0.5 + 0.5 * ((Math.cos(am) * -0.53 + Math.sin(am) * -0.85));
+                const g = Math.round(12 + 26 * lit);
+                wallColor.push(`rgb(${g}, ${g}, ${g + 2})`);
             }
- 
-            // Geometry is stored relative to each cell's centre so it can flip around its own middle
+
+            // Stable random value per cell
+            function rand(a, b) {
+                const s = Math.sin(a * 127.1 + b * 311.7) * 43758.5453;
+                return s - Math.floor(s);
+            }
+
+            // Tiles + the network of gap lines (the lights travel along these)
             function buildCells() {
-                cells = [];
+                cells = []; verts = []; edges = [];
+                const vmap = new Map();
+                function vertex(x, y) {
+                    const k = Math.round(x * 2) + ',' + Math.round(y * 2);
+                    let v = vmap.get(k);
+                    if (!v) { v = { x, y, n: [] }; vmap.set(k, v); verts.push(v); }
+                    return v;
+                }
                 const hexW = Math.sqrt(3) * hexSize;
                 const hexH = 1.5 * hexSize;
-                const outer = [], inner = [], normals = [];
-                for (let i = 0; i < 6; i++) {
-                    const a = Math.PI / 3 * i + Math.PI / 6;
-                    const x = (hexSize - gap) * Math.cos(a);
-                    const y = (hexSize - gap) * Math.sin(a);
-                    outer.push([x, y]);
-                    inner.push([x * (1 - bevel), y * (1 - bevel)]);
-                    const am = a + Math.PI / 6;
-                    normals.push(norm3(Math.cos(am), Math.sin(am), 1));
-                }
                 for (let row = -1; row * hexH < h + hexSize * 2; row++) {
                     const offset = (row % 2 === 0) ? 0 : hexW / 2;
                     for (let col = -1; col * hexW < w + hexW * 2; col++) {
-                        cells.push({ cx: col * hexW + offset, cy: row * hexH, glow: 0 });
+                        const cx = col * hexW + offset, cy = row * hexH;
+                        cells.push({ cx, cy, base: 0.15 + 0.85 * rand(row, col), phase: rand(col, row) * Math.PI * 2, h: 0 });
+                        const vs = [];
+                        for (let i = 0; i < 6; i++) vs.push(vertex(cx + hexSize * unit[i][0], cy + hexSize * unit[i][1]));
+                        for (let i = 0; i < 6; i++) {
+                            const p = vs[i], q = vs[(i + 1) % 6];
+                            if (!p.n.includes(q)) { p.n.push(q); q.n.push(p); edges.push([p, q]); }
+                        }
                     }
                 }
-                cells.geo = { outer, inner, normals };
             }
- 
+
+            const lights = [];
             function resizeCanvas() {
                 const dpr = window.devicePixelRatio || 1;
                 w = window.innerWidth;
@@ -416,74 +479,247 @@
                 canvas.height = h * dpr;
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
                 buildCells();
+                lights.length = 0;
             }
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
- 
-            const mouse = { x: -9999, y: -9999 };
+
+            const mouse = { x: -9999, y: -9999 };     // cursor position on screen
             window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
             window.addEventListener('touchmove', (e) => {
                 if (e.touches[0]) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
             }, { passive: true });
+            window.addEventListener('touchend', () => { mouse.x = -9999; mouse.y = -9999; });
             document.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
- 
-            const ambientDir = norm3(-0.5, -0.7, 1);
- 
-            function polygon(pts) {
-                ctx.beginPath();
-                ctx.moveTo(pts[0][0], pts[0][1]);
-                for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
-                ctx.closePath();
+
+            // ---- Mouse-driven 3D tilt ----
+            const tilt = { x: 0, y: 0 };
+            canvas.style.transformOrigin = '50% 50%';
+            canvas.style.willChange = 'transform';
+
+            // Find where the cursor lands on the tilted wall, so the light starts exactly under it
+            function screenToCanvas(sx, sy) {
+                const ax = tilt.x * Math.PI / 180, ay = tilt.y * Math.PI / 180;
+                const s = tiltScale, P = perspective;
+                const X = sx - w / 2, Y = sy - h / 2;
+                const a = s * Math.cos(ay);
+                const c = s * Math.sin(ay) * Math.sin(ax);
+                const d = s * Math.cos(ax);
+                const A = s * Math.sin(ay) * Math.cos(ax) / P;
+                const B = -s * Math.sin(ax) / P;
+                const m11 = a - X * A, m12 = -X * B, m21 = c - Y * A, m22 = d - Y * B;
+                const det = m11 * m22 - m12 * m21 || 1;
+                return { x: (X * m22 - m12 * Y) / det + w / 2, y: (m11 * Y - m21 * X) / det + h / 2 };
             }
- 
-            
-            function drawHoneycomb() {
-                ctx.fillStyle = '#000000';
-                ctx.fillRect(0, 0, w, h);
- 
-                const t = performance.now() / 1000;
-                const breath = 0.5 + 0.5 * Math.sin(t * 0.8);   // slow breathing
-                const light = 0.4 + 0.4 * breath;
-                const { outer, inner, normals } = cells.geo;
-                
-                for (const c of cells) {
-                    ctx.save();
-                    ctx.translate(c.cx, c.cy);
- 
-                    // Bevel faces
-                    for (let i = 0; i < 6; i++) {
-                        const n = normals[i];
-                        const amb = Math.max(0, n[0] * ambientDir[0] + n[1] * ambientDir[1] + n[2] * ambientDir[2]);
-                        polygon([outer[i], outer[(i + 1) % 6], inner[(i + 1) % 6], inner[i]]);
-                        ctx.fillStyle = `rgba(255, 190, 40, ${Math.min(0.9, 0.03 + 0.75 * (faintLight * amb * amb + 0.25 * light * amb))})`;
+
+            // ---- Gold light streaks ----
+            let lastSpawn = 0;
+            function nearestVertex(x, y) {
+                let best = null, bd = Infinity;
+                for (const v of verts) {
+                    const d = (v.x - x) * (v.x - x) + (v.y - y) * (v.y - y);
+                    if (d < bd) { bd = d; best = v; }
+                }
+                return best;
+            }
+            function spawnLight(p) {
+                const v = nearestVertex(p.x, p.y);
+                if (!v || !v.n.length) return;
+                lights.push({
+                    from: v, to: v.n[Math.floor(Math.random() * v.n.length)], t: 0,
+                    speed: 150 + Math.random() * 180,
+                    hops: 0, maxHops: 4 + Math.floor(Math.random() * 10),
+                    trail: [{ x: v.x, y: v.y }], dying: false
+                });
+            }
+            function updateLights(dt) {
+                for (let i = lights.length - 1; i >= 0; i--) {
+                    const L = lights[i];
+                    if (L.dying) {
+                        L.trail.splice(0, 2);
+                        if (!L.trail.length) lights.splice(i, 1);
+                        continue;
+                    }
+                    const len = Math.hypot(L.to.x - L.from.x, L.to.y - L.from.y) || 1;
+                    L.t += (L.speed * dt) / len;
+                    while (L.t >= 1 && !L.dying) {
+                        L.t -= 1;
+                        L.trail.push({ x: L.to.x, y: L.to.y });
+                        L.hops++;
+                        if (L.hops >= L.maxHops) { L.dying = true; break; }
+                        const options = L.to.n.filter(n => n !== L.from);   // random new direction, never straight back
+                        const next = options[Math.floor(Math.random() * options.length)] || L.from;
+                        L.from = L.to;
+                        L.to = next;
+                    }
+                    if (!L.dying) L.trail.push({ x: L.from.x + (L.to.x - L.from.x) * L.t, y: L.from.y + (L.to.y - L.from.y) * L.t });
+                    if (L.trail.length > 16) L.trail.splice(0, L.trail.length - 16);
+                }
+            }
+            function drawLights() {
+                ctx.save();
+                ctx.globalCompositeOperation = 'lighter';
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                for (const L of lights) {
+                    const tr = L.trail;
+                    if (tr.length < 2) continue;
+                    const head = tr[tr.length - 1], tail = tr[0];
+                    ctx.beginPath();
+                    ctx.moveTo(tail.x, tail.y);
+                    for (let i = 1; i < tr.length; i++) ctx.lineTo(tr[i].x, tr[i].y);
+                    const glow = ctx.createLinearGradient(tail.x, tail.y, head.x, head.y);
+                    glow.addColorStop(0, 'rgba(255, 170, 0, 0)');
+                    glow.addColorStop(1, 'rgba(255, 170, 0, 0.45)');
+                    ctx.lineWidth = 8;
+                    ctx.strokeStyle = glow;
+                    ctx.stroke();
+                    const core = ctx.createLinearGradient(tail.x, tail.y, head.x, head.y);
+                    core.addColorStop(0, 'rgba(255, 200, 40, 0)');
+                    core.addColorStop(1, 'rgba(255, 215, 70, 1)');
+                    ctx.lineWidth = 2.4;
+                    ctx.strokeStyle = core;
+                    ctx.stroke();
+                    if (!L.dying) {
+                        ctx.beginPath();
+                        ctx.arc(head.x, head.y, 3, 0, Math.PI * 2);
+                        ctx.fillStyle = '#fff3b0';
                         ctx.fill();
                     }
- 
-                    // Black top face
-                    polygon(inner);
-                    ctx.fillStyle = '#000';
-                    ctx.fill();
-                    ctx.fillStyle = `rgba(255, 200, 60, ${0.015 + 0.05 * light})`;
-                    ctx.fill();
-                    ctx.lineWidth = 1;
-                    ctx.strokeStyle = `rgba(255, 210, 90, ${0.06 + 0.3 * light})`;
-                    ctx.stroke();
- 
-                    // Breathing gold outline
-                    polygon(outer);
-                    ctx.setLineDash([]);
-                    ctx.lineWidth = 3 + 3 * light;
-                    ctx.strokeStyle = `rgba(255, 185, 30, ${0.08 + 0.25 * light})`;
-                    ctx.stroke();
-                    ctx.lineWidth = 1.2;
-                    ctx.strokeStyle = `rgba(255, ${190 + 40 * breath}, ${30 + 60 * breath}, ${baseGlow + 0.4 * light})`;
-                    ctx.stroke();
- 
-                    ctx.restore();
                 }
+                ctx.restore();
+            }
+
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            const view = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+            const LEVELS = 6;
+            let lastTime = performance.now();
+
+            function drawHoneycomb(now) {
+                const dt = Math.min(0.05, (now - lastTime) / 1000);
+                lastTime = now;
+                const t = now / 1000;
+                const onPage = mouse.x > -9000;
+
+                // Ease the 3D tilt toward the cursor (back to flat when the cursor leaves)
+                const tx = onPage ? -((mouse.y - h / 2) / (h / 2)) * maxTilt : 0;
+                const ty = onPage ? ((mouse.x - w / 2) / (w / 2)) * maxTilt : 0;
+                tilt.x += (tx - tilt.x) * Math.min(1, dt * 6);
+                tilt.y += (ty - tilt.y) * Math.min(1, dt * 6);
+                canvas.style.transform = `perspective(${perspective}px) rotateX(${tilt.x.toFixed(3)}deg) rotateY(${tilt.y.toFixed(3)}deg) scale(${tiltScale})`;
+
+                const vt = onPage ? screenToCanvas(mouse.x, mouse.y) : { x: w / 2, y: h / 2 };
+                view.x += (vt.x - view.x) * Math.min(1, dt * 4);
+                view.y += (vt.y - view.y) * Math.min(1, dt * 4);
+
+                // Soft white light patches that drift slowly across the wall
+                const blobs = [];
+                for (let k = 0; k < 4; k++) {
+                    blobs.push({
+                        x: w * (0.5 + 0.45 * Math.sin(t * 0.03 * (k + 1) + k * 1.7)),
+                        y: h * (0.5 + 0.42 * Math.cos(t * 0.022 * (k + 2) + k * 2.3)),
+                        r2: Math.pow(170 + 50 * (k % 2), 2)
+                    });
+                }
+                function ambientAt(x, y) {
+                    let s = 0;
+                    for (const b of blobs) s += Math.exp(-((x - b.x) * (x - b.x) + (y - b.y) * (y - b.y)) / b.r2);
+                    return Math.min(1, s);
+                }
+                function goldAt(x, y) {
+                    if (!onPage) return 0;
+                    return Math.exp(-((x - vt.x) * (x - vt.x) + (y - vt.y) * (y - vt.y)) / 26000);
+                }
+
+                ctx.fillStyle = '#040404';
+                ctx.fillRect(0, 0, w, h);
+
+                // 1. Light glowing up through the gaps
+                const whiteGaps = [], goldGaps = [];
+                for (let k = 0; k < LEVELS; k++) { whiteGaps.push(new Path2D()); goldGaps.push(new Path2D()); }
+                for (const [p, q] of edges) {
+                    const mx = (p.x + q.x) / 2, my = (p.y + q.y) / 2;
+                    const ia = ambientAt(mx, my), ig = goldAt(mx, my);
+                    if (ia > 0.06) { const P = whiteGaps[Math.min(LEVELS - 1, Math.floor(ia * LEVELS))]; P.moveTo(p.x, p.y); P.lineTo(q.x, q.y); }
+                    if (ig > 0.06) { const P = goldGaps[Math.min(LEVELS - 1, Math.floor(ig * LEVELS))]; P.moveTo(p.x, p.y); P.lineTo(q.x, q.y); }
+                }
+                ctx.save();
+                ctx.globalCompositeOperation = 'lighter';
+                ctx.lineCap = 'round';
+                for (let k = 0; k < LEVELS; k++) {
+                    const a = (k + 0.5) / LEVELS;
+                    ctx.lineWidth = 9; ctx.strokeStyle = `rgba(255, 244, 210, ${0.16 * a})`; ctx.stroke(whiteGaps[k]);
+                    ctx.lineWidth = 3; ctx.strokeStyle = `rgba(255, 250, 230, ${0.85 * a})`; ctx.stroke(whiteGaps[k]);
+                    ctx.lineWidth = 9; ctx.strokeStyle = `rgba(255, 170, 20, ${0.22 * a})`; ctx.stroke(goldGaps[k]);
+                    ctx.lineWidth = 3; ctx.strokeStyle = `rgba(255, 205, 70, ${0.9 * a})`; ctx.stroke(goldGaps[k]);
+                }
+                ctx.restore();
+
+                // 2. Raised tiles, lowest first so taller tiles sit in front (slowly rising and sinking)
+                for (const c of cells) c.h = Math.max(0, c.base + 0.2 * Math.sin(t * 0.25 + c.phase));
+                const order = cells.slice().sort((a, b) => a.h - b.h);
+                const r = hexSize - gap;
+                const B = [], T = [];
+                for (const c of order) {
+                    let ox = (c.cx - view.x) * lift * c.h, oy = (c.cy - view.y) * lift * c.h;
+                    const m = Math.hypot(ox, oy), lim = maxLift * c.h;
+                    if (m > lim) { ox *= lim / m; oy *= lim / m; }
+                    for (let i = 0; i < 6; i++) {
+                        B[i] = [c.cx + r * unit[i][0], c.cy + r * unit[i][1]];
+                        T[i] = [c.cx + ox + r * unit[i][0], c.cy + oy + r * unit[i][1]];
+                    }
+                    // Side walls facing the viewer
+                    for (let i = 0; i < 6; i++) {
+                        if (normals[i][0] * ox + normals[i][1] * oy >= 0) continue;
+                        const j = (i + 1) % 6;
+                        ctx.beginPath();
+                        ctx.moveTo(B[i][0], B[i][1]); ctx.lineTo(B[j][0], B[j][1]);
+                        ctx.lineTo(T[j][0], T[j][1]); ctx.lineTo(T[i][0], T[i][1]);
+                        ctx.closePath();
+                        ctx.fillStyle = wallColor[i];
+                        ctx.fill();
+                    }
+                    // Matte dark top (taller tiles slightly lighter)
+                    ctx.beginPath();
+                    ctx.moveTo(T[0][0], T[0][1]);
+                    for (let i = 1; i < 6; i++) ctx.lineTo(T[i][0], T[i][1]);
+                    ctx.closePath();
+                    const g = Math.round(30 + 14 * c.h);
+                    ctx.fillStyle = `rgb(${g}, ${g}, ${g + 3})`;
+                    ctx.fill();
+                    // Edge light: tile edges catch the glow from the gaps
+                    const tcx = c.cx + ox, tcy = c.cy + oy;
+                    const ia = ambientAt(tcx, tcy), ig = goldAt(tcx, tcy);
+                    ctx.lineWidth = 1.3;
+                    ctx.strokeStyle = `rgba(255, 248, 225, ${0.05 + 0.7 * ia})`;
+                    ctx.stroke();
+                    if (ig > 0.05) {
+                        ctx.strokeStyle = `rgba(255, 200, 60, ${0.85 * ig})`;
+                        ctx.stroke();
+                    }
+                }
+
+                // 3. Cursor: soft gold glow + gold light streaks flowing off in random directions
+                if (onPage) {
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'lighter';
+                    const gr = ctx.createRadialGradient(vt.x, vt.y, 0, vt.x, vt.y, 130);
+                    gr.addColorStop(0, 'rgba(255, 190, 40, 0.18)');
+                    gr.addColorStop(1, 'rgba(255, 190, 40, 0)');
+                    ctx.fillStyle = gr;
+                    ctx.fillRect(vt.x - 130, vt.y - 130, 260, 260);
+                    ctx.restore();
+                    if (now - lastSpawn > spawnEvery && lights.length < maxLights) {
+                        spawnLight(vt);
+                        lastSpawn = now;
+                    }
+                }
+                updateLights(dt);
+                drawLights();
+
                 requestAnimationFrame(drawHoneycomb);
             }
- 
+
             requestAnimationFrame(drawHoneycomb);
         });
     </script>
@@ -516,7 +752,7 @@
             <nav class="flex items-center space-x-6 text-sm text-zinc-400">
                 <button onclick="switchTab(0)" id="nav-0" class="nav-link py-1 hover:text-white transition-colors active">Home</button>
                 <button onclick="switchTab(1)" id="nav-1" class="nav-link py-1 hover:text-white transition-colors">Personal Information</button>
-                <button onclick="switchTab(2)" id="nav-2" class="nav-link py-1 hover:text-white transition-colors">Education and Achievements</button>
+                <button onclick="switchTab(2)" id="nav-2" class="nav-link py-1 hover:text-white transition-colors">Achievements</button>
                 <button onclick="switchTab(3)" id="nav-3" class="nav-link py-1 hover:text-white transition-colors">My Family</button>
                 <button class="p-1 text-zinc-400 hover:text-white transition-colors" aria-label="Search">
                     <i data-lucide="search" class="w-4 h-4"></i>
@@ -525,16 +761,16 @@
         </div>
     </header>
  
-    <main class="flex-1 max-w-5xl w-full mx-auto px-6 pt-20 pb-20 relative z-10">
+    <main class="flex-1 max-w-5xl w-full mx-auto px-6 pt-[68px] pb-[70px] relative z-10">
  
         <!-- 1. HOME SECTION -->
         <section id="page-0" class="page-section active">
-            <div class="flex flex-col md:flex-row items-center justify-center gap-8 sm:gap-12 max-w-5xl mx-auto w-full">
+            <div class="flex flex-col md:flex-row items-center justify-center gap-5 sm:gap-8 max-w-5xl mx-auto w-full">
                 <div class="w-full md:w-1/2 h-[380px] sm:h-[460px] md:h-[500px] bg-zinc-900 border-2 border-zinc-800 rounded-2xl shadow-2xl overflow-hidden flex-shrink-0 flex items-center justify-center p-1">
                     <img src="image_94dac1.png" onerror="this.onerror=null; this.src='1000029639.jpg';" alt="Martin James Espiritu" class="w-full h-full object-contain">
                 </div>
  
-                <div class="w-full md:w-1/2 text-zinc-300 space-y-5 text-left">
+                <div class="w-full md:w-1/2 text-zinc-300 space-y-3 text-left">
                     <div>
                         <span class="text-sm font-semibold tracking-wider text-blue-500 uppercase block mb-1">Hi, I'm</span>
                         <h1 class="text-2xl sm:text-4xl md:text-2xl lg:text-4xl font-bold tracking-tight text-white whitespace-nowrap">
@@ -556,7 +792,7 @@
         <!-- 2. ABOUT ME SECTION -->
         <section id="page-1" class="page-section">
             <div class="max-w-6xl mx-auto flex flex-col justify-center h-full max-h-[82vh]">
-                <div class="mb-4 text-left">
+                <div class="mb-3 text-left">
                     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
                         Martin James Espiritu
                     </h1>
@@ -565,8 +801,8 @@
                     </h2>
                 </div>
  
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch text-left">
-                    <div class="md:col-span-7 bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6 backdrop-blur-md shadow-xl flex flex-col justify-between">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-stretch text-left">
+                    <div class="md:col-span-7 bg-zinc-900/90 border border-zinc-800 rounded-2xl p-5 backdrop-blur-md shadow-xl flex flex-col justify-between">
                         <div class="space-y-2 text-base sm:text-lg text-zinc-200">
                             <div class="flex items-center">
                                 <span class="w-36 font-bold text-zinc-400 shrink-0">Birthday:</span>
@@ -602,7 +838,7 @@
                             </div>
                         </div>
  
-                        <div class="border-t border-zinc-800/80 pt-4 mt-4">
+                        <div class="border-t border-zinc-800/80 pt-3 mt-3">
                             <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3">Connect with me</h3>
                             <div class="flex flex-wrap gap-3">
                                 <a href="https://www.facebook.com/share/18VNKd3n1u/" id="fb-link" target="_blank" rel="noreferrer" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg text-xs font-semibold text-white transition-all flex items-center space-x-2">
@@ -621,7 +857,7 @@
                         </div>
                     </div>
  
-                    <div class="md:col-span-5 flex flex-col justify-between space-y-3">
+                    <div class="md:col-span-5 flex flex-col justify-between space-y-2">
                         <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 backdrop-blur-md">
                             <h3 class="text-xs font-bold uppercase tracking-wider text-blue-500 mb-2">Technical Skills</h3>
                             <div class="flex flex-wrap gap-2">
@@ -653,12 +889,12 @@
  
         <!-- 3. EDUCATION + ACHIEVEMENTS SECTION -->
         <section id="page-2" class="page-section">
-            <h1 class="edu-title">Education and Achievements</h1>
+            <h1 class="edu-title">Achievements</h1>
  
             <div class="edu-grid">
                 <!-- LEFT: education timeline -->
                 <div>
-                    <h2 class="edu-heading">Timeline</h2>
+                    <h2 class="edu-heading">Educational Background</h2>
                     <div class="tl">
                     <div class="tl-item">
                         <span class="tl-dot"></span>
@@ -679,6 +915,7 @@
                                 <h3 class="edu-name">Baguio City High School</h3>
                                 <div class="edu-meta"><p class="edu-level">Senior High School (Grade 11-12)</p><p class="edu-years">2023 - 2025</p></div>
                                 <p class="edu-sub">TVL - Home Economics</p>
+                                <button type="button" class="dip-btn" data-src="senior-high-school-diploma.jpg" data-title="Senior High School Diploma" data-meta="Baguio City High School · April 15, 2025" aria-label="View Senior High School Diploma"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg><span>View diploma</span></button>
                             </div>
                         </div>
                     </div>
@@ -689,6 +926,7 @@
                             <div class="edu-text">
                                 <h3 class="edu-name">Baguio City High School</h3>
                                 <div class="edu-meta"><p class="edu-level">Junior High School (Grade 7-10)</p><p class="edu-years">2019 - 2023</p></div>
+                                <button type="button" class="dip-btn" data-src="junior-high-school-diploma.jpg" data-title="Junior High School Diploma" data-meta="Baguio City High School · 2023" aria-label="View Junior High School Diploma"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg><span>View diploma</span></button>
                             </div>
                         </div>
                     </div>
@@ -720,36 +958,36 @@
                     <h2 class="edu-heading">Achievements</h2>
                     <div class="ach-list">
                     <div class="ach-card">
-                        <a href="high-school-diploma.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open High School Diploma">
-                            <img src="high-school-diploma.jpg" alt="High School Diploma">
-                        </a>
+                        <button type="button" class="ach-thumb" data-src="food-handlers-certificate-of-attendance.jpg" aria-label="View Food Handler's Orientation Certificate of Attendance">
+                            <img src="food-handlers-certificate-of-attendance.jpg" alt="Food Handler's Orientation/Seminar Certificate of Attendance">
+                        </button>
                         <div class="ach-text">
-                            <h3 class="edu-name">High school Diploma</h3>
-                            <p class="edu-years">Baguio City High School · April 15, 2025</p>
+                            <h3 class="edu-name">Food Handler's Orientation/Seminar</h3>
+                            <p class="edu-years">Baguio City Health Services Office · Jan 7, 2025 · valid until Jan 7, 2028</p>
                         </div>
                     </div>
                     <div class="ach-card">
-                        <a href="400-hours-on-the-job-training.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open 400 hours On-the-Job Training certificate">
+                        <button type="button" class="ach-thumb" data-src="400-hours-on-the-job-training.jpg" aria-label="View 400 hours On-the-Job Training certificate">
                             <img src="400-hours-on-the-job-training.jpg" alt="400 hours On-the-Job Training certificate">
-                        </a>
+                        </button>
                         <div class="ach-text">
                             <h3 class="edu-name">400 hours of On-the-Job Training</h3>
                             <p class="edu-years">Don Henrico's · Jan 13 - Mar 23, 2025</p>
                         </div>
                     </div>
                     <div class="ach-card">
-                        <a href="bread-and-pastry-production-nc-ii.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open Bread and Pastry Production NC II">
+                        <button type="button" class="ach-thumb" data-src="bread-and-pastry-production-nc-ii.jpg" aria-label="View Bread and Pastry Production NC II">
                             <img src="bread-and-pastry-production-nc-ii.jpg" alt="Bread and Pastry Production NC II">
-                        </a>
+                        </button>
                         <div class="ach-text">
                             <h3 class="edu-name">Bread and Pastry Production National Certificate II</h3>
                             <p class="edu-years">Issued Dec 9, 2024 · valid until Dec 8, 2029</p>
                         </div>
                     </div>
                     <div class="ach-card">
-                        <a href="kitchen-first-aid-safety-seminar.jpg" target="_blank" rel="noreferrer" class="ach-thumb" aria-label="Open Kitchen First Aid Safety Seminar certificate">
+                        <button type="button" class="ach-thumb" data-src="kitchen-first-aid-safety-seminar.jpg" aria-label="View Kitchen First Aid Safety Seminar certificate">
                             <img src="kitchen-first-aid-safety-seminar.jpg" alt="Kitchen First Aid Safety Seminar certificate">
-                        </a>
+                        </button>
                         <div class="ach-text">
                             <h3 class="edu-name">Kitchen First Aid Safety Seminar</h3>
                             <p class="edu-years">Philippine Red Cross · Dec 18, 2024</p>
@@ -762,21 +1000,21 @@
  
         <!-- 4. MY FAMILY SECTION -->
         <section id="page-3" class="page-section">
-            <h1 class="text-3xl sm:text-4xl font-bold text-center text-white mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-center text-white mb-4">
                 Family
             </h1>
  
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto w-full">
-                <div class="flex flex-col items-center bg-zinc-900/70 p-6 rounded-lg border border-zinc-800">
-                    <div class="w-full h-80 bg-zinc-950 border border-zinc-800 rounded-md mb-5 overflow-hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto w-full">
+                <div class="flex flex-col items-center bg-zinc-900/70 p-4 rounded-lg border border-zinc-800">
+                    <div class="w-full h-80 bg-zinc-950 border border-zinc-800 rounded-md mb-3 overflow-hidden">
                         <img src="https://placehold.co/400x500/18181b/71717a?text=Mother's+Photo" alt="Floricel Cortez" class="w-full h-full object-cover">
                     </div>
                     <p class="text-sm font-semibold text-blue-500 uppercase tracking-wider mb-1">My Mother</p>
                     <p class="text-xl sm:text-2xl text-white font-bold">Floricel Cortez</p>
                 </div>
  
-                <div class="flex flex-col items-center bg-zinc-900/70 p-6 rounded-lg border border-zinc-800">
-                    <div class="w-full h-80 bg-zinc-950 border border-zinc-800 rounded-md mb-5 overflow-hidden">
+                <div class="flex flex-col items-center bg-zinc-900/70 p-4 rounded-lg border border-zinc-800">
+                    <div class="w-full h-80 bg-zinc-950 border border-zinc-800 rounded-md mb-3 overflow-hidden">
                         <img src="https://placehold.co/400x500/18181b/71717a?text=Father's+Photo" alt="Omar Espiritu" class="w-full h-full object-cover">
                     </div>
                     <p class="text-sm font-semibold text-blue-500 uppercase tracking-wider mb-1">My Father</p>
@@ -798,6 +1036,47 @@
             </button>
         </div>
     </footer>
- 
+
+    <!-- Certificate viewer -->
+    <div id="lightbox" class="lb" role="dialog" aria-modal="true" aria-hidden="true">
+        <button class="lb-close" id="lb-close" aria-label="Close">&times;</button>
+        <figure>
+            <img id="lb-img" src="" alt="">
+            <figcaption id="lb-cap"></figcaption>
+        </figure>
+    </div>
+    <script>
+        // Open certificates in the on-page viewer (no links, nothing opens in a new tab)
+        (function () {
+            const lb = document.getElementById('lightbox');
+            const img = document.getElementById('lb-img');
+            const cap = document.getElementById('lb-cap');
+            function openViewer(thumb) {
+                const card = thumb.closest('.ach-card');
+                const titleEl = card ? card.querySelector('.edu-name') : null;
+                const metaEl = card ? card.querySelector('.edu-years') : null;
+                const title = thumb.dataset.title || (titleEl ? titleEl.textContent : '');
+                const meta = thumb.dataset.meta || (metaEl ? metaEl.textContent : '');
+                img.src = thumb.dataset.src;
+                img.alt = thumb.dataset.title || (thumb.querySelector('img') ? thumb.querySelector('img').alt : '');
+                cap.innerHTML = '';
+                if (title) cap.appendChild(document.createTextNode(title));
+                if (meta) { const s = document.createElement('span'); s.textContent = meta; cap.appendChild(s); }
+                lb.classList.add('open');
+                lb.setAttribute('aria-hidden', 'false');
+            }
+            function closeViewer() {
+                lb.classList.remove('open');
+                lb.setAttribute('aria-hidden', 'true');
+            }
+            document.querySelectorAll('.ach-thumb, .dip-btn').forEach(function (thumb) {
+                thumb.addEventListener('click', function () { openViewer(thumb); });
+            });
+            document.getElementById('lb-close').addEventListener('click', closeViewer);
+            lb.addEventListener('click', function (e) { if (e.target === lb) closeViewer(); });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeViewer(); });
+        })();
+    </script>
+
 </body>
 </html>
