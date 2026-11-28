@@ -346,7 +346,13 @@
             border: 1px solid rgba(255,193,37,.3); border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,.6);
             color: #f4f4f5; text-align: center; line-height: 1.45; font-size: clamp(.7rem, 1.6vh, .9rem); }
         .fam-msg.open { display: block; }
-        .fam-photo { cursor: pointer; }
+        .fam-photo { cursor: pointer; position: relative; }
+        .fam-photo::after { content: "\1F446  Click to see message"; position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%);
+            white-space: nowrap; pointer-events: none; padding: 6px 14px; border-radius: 999px; font-size: clamp(.65rem, 1.5vh, .8rem); font-weight: 600;
+            color: #ffd54a; background: rgba(0,0,0,.82); border: 1px solid rgba(255,193,37,.6); box-shadow: 0 0 12px rgba(255,193,37,.3);
+            animation: famHint 1.8s ease-in-out infinite; }
+        .fam-photo:hover::after { color: #fff3b0; border-color: rgba(255,193,37,1); box-shadow: 0 0 18px rgba(255,193,37,.6); }
+        @keyframes famHint { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-4px); } }
         .fm { position: fixed; inset: 0; z-index: 110; display: flex; align-items: center; justify-content: center; padding: 4vh 4vw;
             background: rgba(0,0,0,.18);
             opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility .25s ease; overflow-y: auto; }
